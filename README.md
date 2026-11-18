@@ -10,5 +10,7 @@
 
 - `data.js` — 프로그램 목록 (2026 가이드북 기준). 프로그램을 고치거나 추가할 때 여기만 수정.
 - `logic.js` — 마일리지 계산
-- `app.js`, `index.html` — 화면
+- `app.js`, `index.html` — 학생 화면
+- `admin.js`, `admin.html` — 교직원 화면 (시연용, 가짜 데이터, 이 브라우저에만 저장)
+- `style.css` — 두 화면이 같이 쓰는 꾸밈
 - `test.js` — 검사. `node test.js`로 실행.

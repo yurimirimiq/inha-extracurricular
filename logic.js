@@ -29,4 +29,34 @@ function summarize(records, programs, term) {
   return { termTotal, byComp, certPoints, certCount };
 }
 
-if (typeof module !== 'undefined') module.exports = { mileageTerm, termMonths, runsIn, summarize };
+const isStudentId = (text) => /^\d{8}$/.test(text);
+
+// 교직원이 붙여넣은 명단(줄바꿈·쉼표·공백 구분)을 학번 목록으로. 중복은 한 번만.
+function parseStudentIds(text) {
+  const tokens = [...new Set(text.split(/[\s,;]+/).filter(Boolean))];
+  return { valid: tokens.filter(isStudentId), invalid: tokens.filter((t) => !isStudentId(t)) };
+}
+
+// confirmations: { 학기: { 프로그램이름: { 학번: 점수 } } } → 그 학생 것만 { 학기: { 프로그램이름: 점수 } }
+function confirmedFor(confirmations, studentId) {
+  const out = {};
+  for (const [term, programs] of Object.entries(confirmations)) {
+    for (const [name, students] of Object.entries(programs)) {
+      if (studentId in students) (out[term] ??= {})[name] = students[studentId];
+    }
+  }
+  return out;
+}
+
+// 내가 체크한 것 + 확정된 것. 같은 프로그램이면 확정 점수가 이김.
+function mergeRecords(mine, confirmed) {
+  const out = {};
+  for (const term of new Set([...Object.keys(mine), ...Object.keys(confirmed)])) {
+    out[term] = { ...mine[term], ...confirmed[term] };
+  }
+  return out;
+}
+
+if (typeof module !== 'undefined') {
+  module.exports = { mileageTerm, termMonths, runsIn, summarize, isStudentId, parseStudentIds, confirmedFor, mergeRecords };
+}
