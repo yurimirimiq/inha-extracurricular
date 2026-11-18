@@ -219,6 +219,8 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
 .login-form h2 { margin: 0 0 8px; font-size: 1.75rem; }
 .login-form label { font-size: .875rem; font-weight: 600; }
 .login-form input { display: block; width: 100%; margin-top: 6px; font: inherit; background: var(--tile); border: 0; border-radius: 12px; padding: 13px 14px; }
+.login-form .who { display: flex; gap: 8px; }
+.login-form .who input { width: auto; margin: 0; padding: 0; }
 .login-form button.primary { padding: 14px; font-size: 1rem; }
 .login-form .notice, .login-form .hint { margin: 0; font-size: .875rem; }
 
