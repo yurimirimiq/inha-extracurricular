@@ -1,5 +1,6 @@
-// 시연 도구 (data.js, logic.js 다음에 불러옴). 학교에 보여줄 때 텅 빈 화면 대신 그럴듯한 예시 데이터로 시작하고,
-// 아래쪽 막대로 학생 화면과 교직원 화면을 오갈 수 있게 함. 전부 이 브라우저에만 저장되는 지어낸 데이터.
+// 시연 도구 (data.js, logic.js 다음에 불러옴). 학교에 보여줄 때 텅 빈 화면 대신 그럴듯한 예시 데이터로 시작함.
+// 시연 학생과 시연 교직원으로 둘 다 로그인돼서, 위쪽 줄의 "교직원 화면" / "학생 화면"으로 오갈 수 있음.
+// 전부 이 브라우저에만 저장되는 지어낸 데이터.
 const DEMO_FLAG = 'inha-demo';
 const DEMO_STUDENT = '12229001';
 const DEMO_STAFF = '20190001';
@@ -84,35 +85,5 @@ function seedDemo() {
   set(CUSTOM_KEY, custom);
 }
 
-function endDemo() {
-  for (const key of [DEMO_FLAG, 'inha-session', 'inha-staff-session', 'inha-staff-profile', 'inha-profiles-v1', 'inha-apply-demo-v1', 'inha-team-posts-v1', CUSTOM_KEY]) localStorage.removeItem(key);
-}
-
-// 시연 중이면 화면 아래에 막대를 붙임 (로그인 화면 제외)
-(() => {
-  let on = false;
-  try { on = Boolean(localStorage.getItem(DEMO_FLAG)); } catch { /* 저장소를 못 쓰면 시연 도구 없음 */ }
-  if (!on || document.body.classList.contains('login')) return;
-  document.body.classList.add('demo');
-  const bar = document.createElement('aside');
-  bar.className = 'demo-bar';
-  bar.setAttribute('aria-label', '시연 도구');
-  const staffSide = location.pathname.endsWith('admin.html');
-  const link = (text, href, current) => {
-    const a = Object.assign(document.createElement('a'), { textContent: text, href });
-    if (current) a.setAttribute('aria-current', 'page');
-    return a;
-  };
-  const button = (text, onClick) => {
-    const b = Object.assign(document.createElement('button'), { type: 'button', textContent: text });
-    b.addEventListener('click', onClick);
-    return b;
-  };
-  bar.append(
-    Object.assign(document.createElement('strong'), { textContent: '시연 모드' }),
-    link('학생 화면', 'index.html', !staffSide),
-    link('교직원 화면', 'admin.html', staffSide),
-    button('처음 상태로', () => { if (confirm('예시 데이터를 처음 상태로 되돌릴까요?')) { seedDemo(); location.reload(); } }),
-    button('끝내기', () => { if (confirm('시연을 끝내고 예시 데이터를 모두 지울까요?')) { endDemo(); location.href = 'login.html'; } }));
-  document.body.append(bar);
-})();
+// 시연 중이면 "시험 버전" 안내문을 숨김 (css의 body.demo). 직접 로그인하면 시연이 끝남(login.html).
+try { if (localStorage.getItem(DEMO_FLAG) && !document.body.classList.contains('login')) document.body.classList.add('demo'); } catch { /* 저장소를 못 쓰면 그대로 */ }

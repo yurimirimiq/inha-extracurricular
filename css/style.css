@@ -238,16 +238,8 @@ tbody tr:hover { background: #fafbfc; }
 #message:empty { display: none; }
 @keyframes drop { from { opacity: 0; transform: translate(-50%, -10px); } }
 
-/* 시연 막대 (js/demo.js) */
-body.demo { padding-bottom: 76px; }
+/* 시연 중에는 "시험 버전" 안내문을 숨김 (js/demo.js) */
 body.demo .notice:not(#demoBanner) { display: none; }
-.demo-bar { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 30; display: flex; align-items: center; gap: 4px; max-width: calc(100vw - 16px); background: rgb(23 25 28 / .92); color: #fff; border-radius: 999px; padding: 6px 6px 6px 18px; font-size: .875rem; box-shadow: 0 12px 34px rgb(0 0 0 / .28); backdrop-filter: blur(10px); white-space: nowrap; }
-.demo-bar strong { margin-right: 8px; color: #ffd84d; }
-.demo-bar a, .demo-bar button { color: #fff; text-decoration: none; font-weight: 600; font-size: .875rem; background: transparent; border-radius: 999px; padding: 7px 13px; }
-.demo-bar a[aria-current] { background: #fff; color: var(--ink); }
-.demo-bar button { color: rgb(255 255 255 / .7); }
-.demo-bar a:hover, .demo-bar button:hover { background: rgb(255 255 255 / .14); filter: none; }
-.demo-bar a[aria-current]:hover { background: #fff; }
 
 footer { border-top: 1px solid var(--ink); color: var(--sub); font-size: .8125rem; }
 footer div { max-width: 1000px; margin: 0 auto; padding: 28px 20px 48px; }
@@ -299,8 +291,6 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
   .banners, .explains, .explains.two, .steps { grid-template-columns: 1fr; }
   .stats { grid-template-columns: 1fr 1fr; }
   .nav { padding: 10px 16px; margin: -10px -16px 12px; }
-  .demo-bar { padding-left: 12px; }
-  .demo-bar strong { display: none; }
   .menu { order: 3; width: 100%; margin: 0; }
   .shortcuts { grid-template-columns: repeat(4, 1fr); gap: 16px 4px; }
   .icon { width: 56px; height: 56px; }
