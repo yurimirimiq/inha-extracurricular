@@ -195,7 +195,10 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
 .login-art { background: var(--inha); color: #fff; padding: 56px 48px 0; display: flex; flex-direction: column; overflow: hidden; }
 .login-art h1 { font-size: 3rem; }
 .login-art p { margin: 16px 0 0; font-size: 1.125rem; opacity: .9; }
-.login-art .mascot { margin: auto 0 40px; width: min(78%, 400px); align-self: center; }
+/* 정면을 보는 두 캐릭터. 키 비율은 매뉴얼의 기본 포즈(안뇽 1 : 인덕 0.6)에 맞춤 */
+.mascots { margin: auto 0 44px; display: flex; justify-content: center; align-items: flex-end; gap: 28px; }
+.mascots img { height: clamp(180px, 38vh, 330px); }
+.mascots img + img { height: clamp(108px, 22.8vh, 198px); }
 .login-form { max-width: none; margin: 0; padding: 48px; display: grid; place-items: center; }
 .login-form form { width: min(100%, 360px); display: grid; gap: 16px; }
 .login-form h2 { margin: 0 0 8px; font-size: 1.75rem; }
@@ -214,7 +217,9 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
   .login-art { padding: 32px 24px 0; }
   .login-art h1 { font-size: 2rem; }
   .login-art p { font-size: 1rem; }
-  .login-art .mascot { width: 190px; margin: 16px 0 24px; }
+  .mascots { margin: 20px 0 28px; gap: 18px; }
+  .mascots img { height: 170px; }
+  .mascots img + img { height: 102px; }
   .login-form { padding: 32px 24px 48px; place-items: start center; }
 }
 @media (max-width: 640px) {
