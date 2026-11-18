@@ -62,7 +62,10 @@ input:not([type=checkbox], [type=radio]):focus-visible, textarea:focus-visible, 
 .hero h2 { margin: 0; font-size: 1.125rem; font-weight: 700; }
 .hero .total { display: flex; align-items: baseline; gap: 6px; font-size: 3.5rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin: 10px 0 14px; }
 .total small { font-size: 1.25rem; font-weight: 700; letter-spacing: 0; }
-.hero select { font: inherit; font-size: .875rem; font-weight: 600; color: #fff; background: rgb(255 255 255 / .16); border: 0; border-radius: 999px; padding: 6px 10px; margin-bottom: 20px; }
+.hero select { font: inherit; font-size: .9375rem; font-weight: 700; color: #fff; border: 0; border-radius: 999px; padding: 9px 40px 9px 18px; margin-bottom: 20px; cursor: pointer; appearance: none; -webkit-appearance: none;
+  /* 기본 화살표 대신 넉넉한 자리에 흰 꺾쇠를 그림 */
+  background: rgb(255 255 255 / .18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 1.5 6 6l4.5-4.5'/%3E%3C/svg%3E") no-repeat right 16px center / 11px; transition: background-color .15s; }
+.hero select:hover { background-color: rgb(255 255 255 / .28); }
 .hero select option { color: var(--ink); }
 .hero-mascots { display: flex; align-items: flex-end; gap: 8px; flex: none; margin-bottom: 8px; }
 .hero-mascots img { height: 136px; }
