@@ -37,6 +37,8 @@ function renderScores() {
   }) : [el('li', 'empty', '아직 받은 점수가 없어요. 교직원이 점수를 부여하면 여기에 보여요.')]));
 }
 
+const statusCell = (a) => { const td = el('td'); td.append(el('span', `status ${a.points > 0 ? 'done' : a.status}`, a.points > 0 ? '이수' : APPLY_STATUS[a.status])); return td; };
+
 function renderApplications() {
   const mine = myApplications().sort((a, b) => b[1].at - a[1].at);
   $('applyCount').textContent = `${mine.length}건`;
@@ -55,7 +57,7 @@ function renderApplications() {
       cancel.setAttribute('aria-label', `${name} 신청 취소`);
       last.append(cancel);
     }
-    tr.append(el('td', '', name), el('td', '', day(a.at)), el('td', '', a.points > 0 ? '이수' : APPLY_STATUS[a.status]), el('td', '', a.points > 0 ? `${a.points}점` : '-'), last);
+    tr.append(el('td', '', name), el('td', '', day(a.at)), statusCell(a), el('td', '', a.points > 0 ? `${a.points}점` : '-'), last);
     return tr;
   }));
 }

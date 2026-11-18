@@ -64,7 +64,7 @@ function renderList() {
       });
       mine.append(button);
     } else if (application.points > 0) {
-      mine.append(el('span', 'status selected', `이수 · ${application.points}점`));
+      mine.append(el('span', 'status done', `이수 · ${application.points}점`));
     } else {
       mine.append(el('span', `status ${application.status}`, APPLY_STATUS[application.status]));
       if (application.status === 'applied') {

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>로그인 · 인하 비교과 마일리지</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css?v=23">
+<link rel="stylesheet" href="css/style.css?v=25">
 </head>
 <body class="login">
   <section class="login-art">
@@ -30,12 +30,22 @@
       <label>비밀번호
         <input id="pw" type="password" autocomplete="off" required></label>
       <button type="submit" class="primary">로그인</button>
+      <div class="tour">
+        <p>처음이라면 예시 데이터로 바로 둘러보세요</p>
+        <div>
+          <button type="button" id="tourStudent">학생으로 둘러보기</button>
+          <button type="button" id="tourStaff">교직원으로 둘러보기</button>
+        </div>
+      </div>
       <p class="notice"><strong>지금은 시험 버전이에요.</strong> 아무 값이나 넣어도 들어가지고, 비밀번호는 어디에도 저장하지 않아요.
         인하포털 비밀번호는 넣지 마세요.</p>
       <p class="hint">인하대학교 공식 서비스가 아니에요. 학생이 만든 비교과 안내 사이트예요. 마스코트 안뇽·인덕의 저작권은 인하대학교에 있어요.</p>
     </form>
   </main>
 
+<script src="js/data.js?v=25"></script>
+<script src="js/logic.js?v=25"></script>
+<script src="js/demo.js?v=25"></script>
 <script>
   // shortcut: 진짜 로그인이 아님. 학번(교직원은 사번)만 이 브라우저에 기억하고 비밀번호는 버림. 이름·학과는 마이페이지에서 적음. 서버(Supabase)나 학교 로그인으로 바꿀 때 이 부분을 교체.
   const $ = (id) => document.getElementById(id);
@@ -51,6 +61,16 @@
     try { localStorage.setItem(staff ? 'inha-staff-session' : 'inha-session', $('sid').value.trim()); } catch { /* 저장소를 못 써도 들어가게 함 */ }
     location.href = staff ? 'admin.html' : 'index.html';
   });
+  // 둘러보기: 예시 데이터를 채우고 시연 학생·교직원으로 바로 들어감 (js/demo.js)
+  const tour = (to) => () => {
+    let has = false;
+    try { has = Boolean(localStorage.getItem('inha-apply-demo-v1') || localStorage.getItem('inha-team-posts-v1')) && !localStorage.getItem(DEMO_FLAG); } catch { /* 아래에서 처리 */ }
+    if (has && !confirm('이 브라우저에 저장된 신청과 글을 예시 데이터로 바꿀까요?')) return;
+    try { seedDemo(); } catch { alert('이 브라우저는 저장소를 쓸 수 없어서 둘러보기를 시작하지 못했어요.'); return; }
+    location.href = to;
+  };
+  $('tourStudent').addEventListener('click', tour('index.html'));
+  $('tourStaff').addEventListener('click', tour('admin.html'));
 </script>
 </body>
 </html>

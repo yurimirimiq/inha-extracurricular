@@ -35,6 +35,8 @@ const PROFILES_KEY = 'inha-profiles-v1';
 let profiles = {};
 try { profiles = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {}; } catch { /* 위와 같음 */ }
 const profile = profiles[me] || {};
+// 이름을 적어 뒀으면 위쪽 줄에 학번 대신 이름을 보여줌
+if (profile.name && !isStudentId(demoId)) $('who').textContent = `${profile.name} 님`;
 // 내 마일리지 = 교직원이 부여한 점수
 const effective = () => grantedFor(applications, me);
 
