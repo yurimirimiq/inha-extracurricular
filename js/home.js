@@ -26,7 +26,7 @@ function renderSide() {
   const count = (status) => mine.filter((a) => a.status === status).length;
   $('appliedCount').textContent = mine.length;
   $('appliedFoot').textContent = mine.length ? `선발 ${count('selected')}건 · 대기 ${count('applied')}건` : '신청한 프로그램 보기';
-  $('teamCount').textContent = Object.values(teamPosts).reduce((n, list) => n + list.length, 0);
+  $('teamCount').textContent = boardPosts.length;
 }
 
 $('term').addEventListener('change', renderSummary);

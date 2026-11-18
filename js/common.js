@@ -38,18 +38,16 @@ const profile = profiles[me] || {};
 // 내 마일리지 = 교직원이 부여한 점수
 const effective = () => grantedFor(applications, me);
 
-// 팀 프로그램 카드에 글 개수를 보여주려고 읽음 (쓰기는 team.js)
-let teamPosts = {};
-const loadStore = () => {
-  try {
-    applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {};
-    teamPosts = JSON.parse(localStorage.getItem('inha-team-posts-v1')) || {};
-  } catch { /* 위와 같음 */ }
-};
+const loadStore = () => { try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ } };
 loadStore();
+// 팀원 구하기 글 (board.js가 서버나 이 브라우저에서 읽어옴). 받아오면 화면을 다시 그림.
+let boardPosts = [];
+const loadBoard = () => board.list(me).then((list) => { boardPosts = list; refresh(); }).catch(() => { /* 서버에 못 닿으면 글 없이 보여줌 */ });
+// 화면별 파일의 refresh()가 준비된 뒤에 받아옴
+document.addEventListener('DOMContentLoaded', loadBoard);
 // 다른 탭에서 저장하면 여기 것도 다시 읽고 다시 그림. 안 그러면 옛 내용으로 덮어써서 지운 글·신청이 되살아남.
 // refresh()는 화면별 파일(home.js, programs.js, mypage.js)에 있음.
-window.addEventListener('storage', () => { loadStore(); refresh(); });
+window.addEventListener('storage', () => { loadStore(); refresh(); loadBoard(); });
 
 const option = (value, text = value) => Object.assign(document.createElement('option'), { value, textContent: text });
 if ($('term')) {

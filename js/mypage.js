@@ -6,7 +6,6 @@ const button = (text, onClick) => {
   b.addEventListener('click', onClick);
   return b;
 };
-const saveTeamPosts = () => { try { localStorage.setItem('inha-team-posts-v1', JSON.stringify(teamPosts)); } catch { /* 저장소를 못 쓰면 저장 없이 동작 */ } };
 const myApplications = () => Object.entries(applications).filter(([, a]) => a[me]).map(([name, a]) => [name, a[me]]);
 
 // 내 정보. 저장한 적이 없으면 신청에 적혀 있던 이름·학과를 보여줌(교직원 시연 학생).
@@ -63,14 +62,14 @@ function renderApplications() {
 
 // 내 글·댓글: 내용은 사용자가 쓴 것이라 전부 textContent로만 넣음
 function renderWriting() {
-  const posts = [], comments = [];
-  for (const [program, list] of Object.entries(teamPosts)) {
-    for (const post of list) {
-      if (post.author === me) posts.push({ program, list, post });
-      for (const c of post.comments || []) if (c.author === me) comments.push({ program, post, c });
-    }
-  }
-  const card = (program, at, parts, onRemove, removeText) => {
+  const posts = boardPosts.filter((p) => p.mine);
+  const comments = boardPosts.flatMap((post) => post.comments.filter((c) => c.mine).map((c) => ({ post, c }))).sort((a, b) => b.c.at - a.c.at);
+  const fail = () => alert('게시판에 연결하지 못했어요. 잠시 후 다시 해주세요.');
+  const remove = (ask, action) => {
+    if (!confirm(ask)) return;
+    action().then((done) => { if (!done) alert('이 브라우저에서 쓴 것만 지울 수 있어요.'); return loadBoard(); }).catch(fail);
+  };
+  const card = (program, at, parts, removeText, onRemove) => {
     const li = el('li', 'card');
     const meta = el('div', 'card-top');
     meta.append(teamLink(program), el('span', '', day(at)));
@@ -81,22 +80,14 @@ function renderWriting() {
   };
   $('postCount').textContent = `${posts.length}개`;
   $('postsEmpty').hidden = posts.length > 0;
-  $('myPosts').replaceChildren(...posts.sort((a, b) => b.post.at - a.post.at).map(({ program, list, post }) => card(program, post.at,
-    [el('h3', '', post.title), el('p', 'post-body', post.body), el('p', 'hint', `댓글 ${(post.comments || []).length}개`)],
-    () => {
-      if (!confirm('이 글을 지울까요? 달린 댓글도 같이 지워져요.')) return;
-      teamPosts[program] = list.filter((p) => p.id !== post.id);
-      saveTeamPosts(); renderWriting();
-    }, '글 지우기')));
+  $('myPosts').replaceChildren(...posts.map((post) => card(post.program, post.at,
+    [el('h3', '', post.title), el('p', 'post-body', post.body), el('p', 'hint', `댓글 ${post.comments.length}개`)],
+    '글 지우기', () => remove('이 글을 지울까요? 달린 댓글도 같이 지워져요.', () => board.removePost(post.id)))));
   $('commentCount').textContent = `${comments.length}개`;
   $('commentsEmpty').hidden = comments.length > 0;
-  $('myComments').replaceChildren(...comments.sort((a, b) => b.c.at - a.c.at).map(({ program, post, c }) => card(program, c.at,
+  $('myComments').replaceChildren(...comments.map(({ post, c }) => card(post.program, c.at,
     [el('p', 'hint', `"${post.title}" 글에 남긴 댓글`), el('p', 'post-body', c.body)],
-    () => {
-      if (!confirm('이 댓글을 지울까요?')) return;
-      post.comments = post.comments.filter((x) => x.id !== c.id);
-      saveTeamPosts(); renderWriting();
-    }, '댓글 지우기')));
+    '댓글 지우기', () => remove('이 댓글을 지울까요?', () => board.removeComment(c.id)))));
 }
 
 function refresh() { renderScores(); renderApplications(); renderWriting(); }

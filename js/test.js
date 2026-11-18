@@ -53,4 +53,53 @@ assert.equal(summarize(grantedFor(apps, '12201234'), PROGRAMS, '2026-2').termTot
 assert.equal(authorLabel('12221234'), '22학번');
 for (const odd of ['ㄷ', '', null, 'guest']) assert.equal(authorLabel(odd), '익명');
 
-console.log(`통과 (프로그램 ${PROGRAMS.length}개)`);
+// 게시판 서버 모드(board.js): 가짜 서버로 요청 모양과 "내 글" 구분, 지우기 권한을 검사.
+// 가짜 서버는 supabase.sql과 같은 규칙을 흉내 냄(열쇠의 SHA-256이 owner_tag와 같아야 지워짐).
+(async () => {
+  const fs = require('node:fs');
+  const { createHash } = require('node:crypto');
+  const tables = { posts: [], comments: [] };
+  let nextId = 1;
+  const fakeFetch = async (url, { method, headers, body }) => {
+    assert.equal(headers.apikey, 'KEY');
+    const path = url.replace('https://x.supabase.co/rest/v1/', '');
+    const data = body && JSON.parse(body);
+    const reply = (value) => ({ ok: true, text: async () => (value === undefined ? '' : JSON.stringify(value)) });
+    if (method === 'GET') {
+      assert.equal(path, 'posts?select=*,comments(*)&order=created_at.desc');
+      return reply(tables.posts.map((p) => ({ ...p, comments: tables.comments.filter((c) => c.post_id === p.id) })));
+    }
+    if (path.startsWith('rpc/delete_')) {
+      const table = tables[path === 'rpc/delete_post' ? 'posts' : 'comments'];
+      const tag = createHash('sha256').update(data.p_key).digest('hex');
+      const at = table.findIndex((row) => row.id === data.p_id && row.owner_tag === tag);
+      if (at >= 0) table.splice(at, 1);
+      return reply(at >= 0);
+    }
+    assert.match(data.owner_tag, /^[0-9a-f]{64}$/);
+    assert.equal(data.author, '22학번'); // 학번 전체는 서버로 안 보냄
+    tables[path].push({ id: nextId++, created_at: new Date(nextId * 1000).toISOString(), ...data });
+    return reply();
+  };
+  // 브라우저 한 대 = 저장소 하나. 서로 다른 열쇠를 갖게 됨.
+  const browser = () => {
+    const store = {};
+    const localStorage = { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; } };
+    return new Function('SUPABASE_URL', 'SUPABASE_ANON_KEY', 'authorLabel', 'localStorage', 'fetch',
+      `${fs.readFileSync(`${__dirname}/board.js`, 'utf8')}; return board;`)('https://x.supabase.co', 'KEY', authorLabel, localStorage, fakeFetch);
+  };
+  const mine = browser(), other = browser();
+  assert.equal(mine.remote, true);
+  await mine.addPost('12221234', '인하 튜터링', { title: '제목', body: '내용', contact: '연락' });
+  const [post] = await other.list('12229999');
+  assert.deepEqual([post.title, post.program, post.author, post.mine], ['제목', '인하 튜터링', '22학번', false]); // 남에게도 보이지만 남의 글
+  await other.addComment('12221111', post.id, '댓글');
+  const [seen] = await mine.list('12221234');
+  assert.deepEqual([seen.mine, seen.comments.length, seen.comments[0].body, seen.comments[0].mine], [true, 1, '댓글', false]);
+  assert.equal(await other.removePost(post.id), false); // 남은 못 지움
+  assert.equal(await mine.removeComment(seen.comments[0].id), false);
+  assert.equal(await other.removeComment(seen.comments[0].id), true);
+  assert.equal(await mine.removePost(post.id), true);
+  assert.deepEqual(await mine.list('12221234'), []);
+  console.log(`통과 (프로그램 ${PROGRAMS.length}개)`);
+})();

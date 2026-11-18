@@ -79,7 +79,7 @@ function renderList() {
       }
     }
     if (p.team) {
-      const n = (teamPosts[p.name] || []).length;
+      const n = boardPosts.filter((post) => post.program === p.name).length;
       mine.append(Object.assign(el('a', 'pill-link', n ? `팀원 ${n}` : '팀원 구하기'), { href: `team.html?p=${encodeURIComponent(p.name)}` }));
     }
 
