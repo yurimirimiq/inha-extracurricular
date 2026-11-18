@@ -16,7 +16,12 @@ function seedDemo() {
     12229004: ['최용현', '기계공학과'], 12259005: ['정하늘', '국제통상학과'], 12239006: ['한바다', '해양과학과'],
     12249007: ['오하윤', '화학공학과'], 12259008: ['서지우', '전자공학과'], 12239009: ['문태오', '통계학과'],
   };
-  const custom = [{ name: 'AI 활용 글쓰기 워크숍', dept: '교수학습개발센터', comp: '의사소통', points: 2, months: TERM, custom: true, note: '회차별 20명' }];
+  // 교직원이 등록한 활동: 신청 중(마감 임박) 하나, 곧 시작 하나
+  const dateText = (offset) => todayText(new Date(now + offset * day));
+  const custom = [
+    { name: 'AI 활용 글쓰기 워크숍', dept: '교수학습개발센터', comp: '의사소통', points: 2, months: TERM, custom: true, note: '회차별 20명', applyFrom: dateText(-6), applyTo: dateText(2) },
+    { name: '겨울방학 코딩 부트캠프', dept: '인하공학교육혁신센터', comp: '지식활용', points: 4, months: VAC, custom: true, note: '3주 과정', applyFrom: dateText(4), applyTo: dateText(18) },
+  ];
 
   // '학번:상태+점수'. a=대기, s=선발완료, r=미선발, 뒤의 숫자는 부여한 점수. 끝에 p가 붙으면 지난 학기 점수.
   const plan = {
@@ -33,7 +38,7 @@ function seedDemo() {
     '인하-동동(同動)': '12239002:a 12249007:a 12259008:a',
     'INHA B-Meet Club': '12249003:a 12249007:s 12239009:a',
     '영어 프리젠테이션 경진대회': '12229001:r 12259008:s 12229004:a',
-    'AI 활용 글쓰기 워크숍': '12229001:a 12239002:a 12239006:a 12249007:a 12239009:a',
+    'AI 활용 글쓰기 워크숍': '12259008:a 12239002:a 12239006:a 12249007:a 12239009:a', // 시연 학생은 아직 신청 전 (직접 눌러 보게)
   };
   const applications = {};
   let n = 0;

@@ -32,6 +32,25 @@ function summarize(records, programs, term) {
 // 신청 상태 (학생 화면과 교직원 화면이 같이 씀)
 const APPLY_STATUS = { applied: '대기', selected: '선발완료', rejected: '미선발' };
 
+// 신청 기간. applyFrom~applyTo는 '2026-11-20' 모양이고 두 날 모두 신청할 수 있음. today도 같은 모양.
+// 기간이 없는 프로그램(가이드북 목록)은 null. state: before(시작 전) / open(신청 중) / closed(마감), days: 시작 또는 마감까지 남은 날
+function applyPeriod(program, today) {
+  if (!program.applyFrom || !program.applyTo) return null;
+  const days = (from, to) => Math.round((Date.parse(to) - Date.parse(from)) / 86400000);
+  if (today < program.applyFrom) return { state: 'before', days: days(today, program.applyFrom) };
+  if (today > program.applyTo) return { state: 'closed', days: 0 };
+  return { state: 'open', days: days(today, program.applyTo) };
+}
+const periodLabel = ({ state, days }) => ({
+  before: `${days}일 뒤 신청 시작`,
+  open: days === 0 ? '오늘 마감' : `마감까지 ${days}일`,
+  closed: '신청 마감',
+}[state]);
+// 날짜를 '2026-11-20' 모양으로 (이 기기 시간 기준, 안 주면 오늘)
+const todayText = (d = new Date()) => { return [d.getFullYear(), String(d.getMonth() + 1).padStart(2, '0'), String(d.getDate()).padStart(2, '0')].join('-'); };
+// '2026-11-20' → '11.20'
+const shortDate = (text) => `${Number(text.slice(5, 7))}.${Number(text.slice(8, 10))}`;
+
 const isStudentId = (text) => /^\d{8}$/.test(text);
 
 // 게시판 글쓴이 표시: 학번 전체 대신 입학 연도만 (12221234 → "22학번"). 인하대 학번이 12 + 입학 연도 두 자리로 시작한다고 가정함.
@@ -49,5 +68,5 @@ function grantedFor(applications, studentId) {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { mileageTerm, termMonths, runsIn, summarize, APPLY_STATUS, isStudentId, authorLabel, grantedFor };
+  module.exports = { mileageTerm, termMonths, runsIn, summarize, APPLY_STATUS, isStudentId, authorLabel, grantedFor, applyPeriod, periodLabel, shortDate };
 }

@@ -33,7 +33,9 @@ function renderList() {
     (!$('dept').value || p.dept === $('dept').value) &&
     (!$('teamOnly').checked || p.team) &&
     (!$('appliedOnly').checked || applications[p.name]?.[me]) &&
-    (!q || p.name.toLowerCase().includes(q)));
+    (!q || p.name.toLowerCase().includes(q)))
+    // 지금 신청 기간인 활동을 맨 앞에
+    .sort((a, b) => (applyPeriod(b, todayText())?.state === 'open') - (applyPeriod(a, todayText())?.state === 'open'));
 
   $('count').textContent = `${shown.length}개`;
   $('empty').hidden = shown.length > 0;
@@ -47,6 +49,8 @@ function renderList() {
     const info = el('dl', 'info');
     const row = (title, ...detail) => { const dd = el('dd'); dd.append(...detail); info.append(el('dt', '', title), dd); };
     row('부서', Object.assign(el('a', '', p.dept), { href: DEPTS[p.dept], target: '_blank', rel: 'noopener' }));
+    const period = applyPeriod(p, todayText());
+    if (period) row('신청', `${shortDate(p.applyFrom)} ~ ${shortDate(p.applyTo)}`);
     if (p.team) row('팀', p.team);
     if (p.note) row('참고', p.note);
     const more = el('details');
@@ -55,10 +59,15 @@ function renderList() {
     // 학생은 신청만 함. 선발과 점수는 교직원 화면에서.
     const mine = el('div', 'mine');
     const application = applications[p.name]?.[me];
-    if (!application) {
+    // 신청 기간이 있는 활동은 남은 기간을 보여주고, 기간 밖에서는 신청을 막음
+    if (period && !application) mine.append(el('span', `period ${period.state}${period.state === 'open' && period.days <= 3 ? ' soon' : ''}`, periodLabel(period)));
+    if (!application && period && period.state !== 'open') {
+      // 신청 단추 없음
+    } else if (!application) {
       const button = el('button', 'primary', '신청하기');
       button.type = 'button';
       button.addEventListener('click', () => {
+        if (period && applyPeriod(p, todayText()).state !== 'open') { renderList(); return; } // 화면을 켜 둔 사이 마감된 경우
         (applications[p.name] ??= {})[me] = { status: 'applied', at: Date.now(), name: profile.name || '', dept: profile.dept || '' };
         saveApplications(); renderList();
       });

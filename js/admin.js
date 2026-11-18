@@ -42,6 +42,8 @@ const program = PROGRAMS.find((p) => p.name === wanted);
 if (wanted && !program) location.replace('admin.html');
 $(program ? 'detailView' : 'listView').hidden = false;
 
+// 신청 기간이 있는 활동이면 ' · 신청 11.20~12.2 (마감까지 5일)'
+const periodText = (p) => { const period = applyPeriod(p, todayText()); return period ? ` · 신청 ${shortDate(p.applyFrom)}~${shortDate(p.applyTo)} (${periodLabel(period)})` : ''; };
 const applicantsOf = (name) => Object.entries(applications[name] || {});
 const count = (name, status) => applicantsOf(name).filter(([, a]) => a.status === status).length;
 
@@ -79,7 +81,7 @@ function renderList() {
     mine.append(
       el('span', total ? 'count' : 'count none', total ? `신청 ${total}명` : '신청 없음'),
       Object.assign(el('a', 'pill-link', waiting ? `선발하기 ${waiting}` : '신청자 보기'), { href: `admin.html?p=${encodeURIComponent(p.name)}` }));
-    const detail = total ? `대기 ${waiting} · 선발 ${count(p.name, 'selected')} · 미선발 ${count(p.name, 'rejected')}` : '아직 신청한 학생이 없어요';
+    const detail = (total ? `대기 ${waiting} · 선발 ${count(p.name, 'selected')} · 미선발 ${count(p.name, 'rejected')}` : '아직 신청한 학생이 없어요') + periodText(p);
     li.append(top, el('h3', '', p.name), el('p', 'hint', detail), mine);
     return li;
   }));
@@ -144,7 +146,7 @@ const render = program ? renderDetail : renderList;
 if (program) {
   document.title = `${program.name} 신청자 · 교직원 화면`;
   $('programName').textContent = program.name;
-  $('programInfo').textContent = `${program.dept} · ${program.comp} · 마일리지 ${program.points}점${program.team ? ` · 팀 구성: ${program.team}` : ''}`;
+  $('programInfo').textContent = `${program.dept} · ${program.comp} · 마일리지 ${program.points}점${program.team ? ` · 팀 구성: ${program.team}` : ''}${periodText(program)}`;
   document.querySelector('.pills').addEventListener('change', render);
   // 한 번에 처리: 대기 중인 신청을 모두 선발 / 아직 점수가 없는 선발자에게 활동의 기본 점수 부여
   $('grantAll').textContent = `선발자 전원에게 ${program.points}점 부여`;
@@ -184,11 +186,14 @@ if (program) {
     if (PROGRAMS.some((p) => p.name === name)) { say(`"${name}" 활동이 이미 있어요. 다른 이름으로 등록해 주세요.`); return; }
     // 값은 고르는 칸에서만 오게 하고, 점수는 1~30 사이로 맞춤 (저장된 값을 학생 화면이 그대로 씀)
     if (!name || !(text('pDept') in DEPTS) || !COMPS.includes(text('pComp'))) return;
+    const isDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value);
+    if (!isDate(text('pFrom')) || !isDate(text('pTo'))) { say('신청 시작일과 마감일을 넣어 주세요.'); return; }
+    if (text('pFrom') > text('pTo')) { say('신청 마감일이 시작일보다 빨라요.'); return; }
     const added = {
       name, dept: text('pDept'), comp: text('pComp'),
       points: Math.min(30, Math.max(1, Math.round(Number($('pPoints').value)) || 1)),
       months: { term: TERM, vac: VAC, year: R(1, 12), any: ALL }[$('pWhen').value] ?? ALL,
-      custom: true,
+      applyFrom: text('pFrom'), applyTo: text('pTo'), custom: true,
     };
     if (text('pTeam')) added.team = text('pTeam');
     if (text('pNote')) added.note = text('pNote');

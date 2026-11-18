@@ -1,7 +1,7 @@
 // 실행: node js/test.js
 const assert = require('node:assert');
 const { PROGRAMS, DEPTS, COMPS } = require('./data.js');
-const { mileageTerm, termMonths, runsIn, summarize, grantedFor, authorLabel } = require('./logic.js');
+const { mileageTerm, termMonths, runsIn, summarize, grantedFor, authorLabel, applyPeriod, periodLabel, shortDate } = require('./logic.js');
 
 // 데이터 검사
 assert.equal(new Set(PROGRAMS.map((p) => p.name)).size, PROGRAMS.length, '프로그램 이름이 겹침');
@@ -48,6 +48,19 @@ const apps = {
 assert.deepEqual(grantedFor(apps, '12201234'), { '2026-2': { '인하 튜터링': 4 }, '2026-1': { '국제도우미 Buddy': 3 } });
 assert.deepEqual(grantedFor(apps, '00000000'), {});
 assert.equal(summarize(grantedFor(apps, '12201234'), PROGRAMS, '2026-2').termTotal, 4);
+
+// 신청 기간
+{
+  const p = { applyFrom: '2026-11-20', applyTo: '2026-12-02' };
+  assert.equal(applyPeriod({}, '2026-11-20'), null); // 기간이 없는 프로그램
+  assert.deepEqual(applyPeriod(p, '2026-11-17'), { state: 'before', days: 3 });
+  assert.deepEqual(applyPeriod(p, '2026-11-20'), { state: 'open', days: 12 }); // 시작하는 날, 달이 넘어가도 계산됨
+  assert.deepEqual(applyPeriod(p, '2026-12-02'), { state: 'open', days: 0 });  // 마감하는 날까지 신청 가능
+  assert.deepEqual(applyPeriod(p, '2026-12-03'), { state: 'closed', days: 0 });
+  assert.equal(periodLabel({ state: 'open', days: 0 }), '오늘 마감');
+  assert.equal(periodLabel({ state: 'open', days: 5 }), '마감까지 5일');
+  assert.equal(shortDate('2026-03-05'), '3.5');
+}
 
 // 글쓴이 표시
 assert.equal(authorLabel('12221234'), '22학번');
