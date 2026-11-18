@@ -50,11 +50,11 @@ for (let y = now.getFullYear(); y >= now.getFullYear() - 4; y--) {
 }
 $('term').value = mileageTerm(now);
 Object.keys(DEPTS).forEach((d) => $('dept').append(option(d)));
-const ICONS = { 자율책임: '🧭', 의사소통: '💬', 창의사고: '💡', 지식활용: '📚', 공감협동: '🤝', 글로벌: '🌏' };
+const ICONS = { 자율책임: 'compass', 의사소통: 'speech', 창의사고: 'bulb', 지식활용: 'books', 공감협동: 'handshake', 글로벌: 'globe' };
 for (const c of COMPS) {
   const label = el('label', 'shortcut');
-  const icon = el('span', 'icon', ICONS[c]);
-  icon.setAttribute('aria-hidden', 'true');
+  const icon = el('span', 'icon');
+  icon.append(Object.assign(document.createElement('img'), { src: `icons/${ICONS[c]}.png`, alt: '' }));
   label.dataset.comp = c;
   label.append(Object.assign(document.createElement('input'), { type: 'radio', name: 'comp', value: c }), icon, c);
   $('teamShortcut').before(label);
@@ -143,7 +143,7 @@ function renderList() {
     const more = el('details');
     more.append(el('summary', '', '신청 방법 보기'), info);
 
-    const apply = el('div', 'mine apply');
+    const apply = el('div');
     const application = applications[p.name]?.[me];
     if (!application) {
       const button = el('button', 'primary', '신청하기');
@@ -154,9 +154,10 @@ function renderList() {
       });
       apply.append(button);
     } else {
-      apply.append(el('span', `status ${application.status}`, application.status === 'applied' ? '신청 완료 · 선발 대기 중' : APPLY_STATUS[application.status]));
+      apply.append(el('span', `status ${application.status}`, application.status === 'applied' ? '선발 대기' : APPLY_STATUS[application.status]));
       if (application.status === 'applied') {
-        const cancel = el('button', '', '신청 취소');
+        const cancel = el('button', '', '취소');
+        cancel.setAttribute('aria-label', `${p.name} 신청 취소`);
         cancel.type = 'button';
         cancel.addEventListener('click', () => {
           delete applications[p.name][me];
@@ -169,11 +170,11 @@ function renderList() {
     const mine = el('div', 'mine');
     const check = Object.assign(document.createElement('input'), { type: 'checkbox', checked: done, disabled: locked });
     const toggle = el('label', 'toggle');
-    toggle.append(check, locked ? `이수 확정 ${sure[p.name]}점` : done ? '참여했어요 ✓' : '참여했어요');
+    toggle.append(check, locked ? `확정 ${sure[p.name]}점` : done ? '참여 ✓' : '참여');
     mine.append(toggle);
     if (p.team) {
       const n = (teamPosts[p.name] || []).length;
-      mine.append(Object.assign(el('a', 'pill-link', n ? `팀원 구하기 ${n}` : '팀원 구하기'), { href: `team.html?p=${encodeURIComponent(p.name)}` }));
+      mine.append(Object.assign(el('a', 'pill-link', n ? `팀원 ${n}` : '팀원 구하기'), { href: `team.html?p=${encodeURIComponent(p.name)}` }));
     }
     check.addEventListener('change', () => {
       records[term] ??= {};
@@ -190,11 +191,13 @@ function renderList() {
         save(); renderSummary();
       });
       const pointsLabel = el('label');
-      pointsLabel.append('받은 점수 ', points);
+      pointsLabel.append(points, '점');
       mine.append(pointsLabel);
     }
 
-    li.append(top, el('h3', '', p.name), more, apply, mine);
+    // 칸을 작게 쓰려고 신청과 참여 단추를 한 줄에 모음
+    mine.prepend(...apply.childNodes);
+    li.append(top, el('h3', '', p.name), more, mine);
     return li;
   }));
 }

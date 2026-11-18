@@ -54,7 +54,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .total small { font-size: 1.25rem; font-weight: 700; letter-spacing: 0; }
 .hero select { font: inherit; font-size: .875rem; font-weight: 600; color: #fff; background: rgb(255 255 255 / .16); border: 0; border-radius: 999px; padding: 6px 10px; margin-bottom: 20px; }
 .hero select option { color: var(--ink); }
-.hero svg { width: 132px; flex: none; margin-bottom: -6px; }
+.mascot { width: 120px; flex: none; margin-bottom: 8px; }
 .hero-links { list-style: none; margin: 0; padding: 0; display: flex; border-top: 1px solid rgb(255 255 255 / .22); font-size: .875rem; }
 .hero-links li { flex: 1; text-align: center; padding: 14px 4px; }
 .hero-links li + li { box-shadow: -1px 0 0 rgb(255 255 255 / .22); }
@@ -62,7 +62,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .side-title { font-size: 1.125rem; font-weight: 700; }
 .side-value { font-size: 1.25rem; font-weight: 700; margin-top: 10px; }
 .side-value b { font-size: 2.75rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-right: 4px; }
-.side-icon { position: absolute; right: 24px; top: 74px; font-size: 3rem; line-height: 1; }
+.side-icon { position: absolute; right: 22px; top: 66px; width: 68px; }
 .side-foot { margin-top: auto; border-top: 1px solid var(--line); padding: 14px 0; text-align: center; font-size: .875rem; font-weight: 500; }
 
 /* 옅은 색 띠 타일 */
@@ -85,7 +85,8 @@ progress::-moz-progress-bar { background: var(--inha); border-radius: 999px; }
 .shortcuts { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
 .shortcut { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: .875rem; color: var(--sub); cursor: pointer; user-select: none; text-align: center; }
 .shortcut input { position: absolute; opacity: 0; pointer-events: none; }
-.icon { width: 64px; height: 64px; display: grid; place-items: center; font-size: 1.75rem; background: var(--t, var(--tile)); border-radius: 20px; border: 2px solid transparent; }
+.icon img { width: 40px; }
+.icon { width: 64px; height: 64px; display: grid; place-items: center; background: var(--t, var(--tile)); border-radius: 20px; border: 2px solid transparent; }
 .shortcut:has(:checked) { color: var(--ink); font-weight: 700; }
 .shortcut:has(:checked) .icon { border-color: var(--inha); background: var(--blue-soft); }
 
@@ -104,23 +105,23 @@ input[type=search] { flex: 1 1 180px; min-width: 0; border-radius: 999px; }
 input[type=number] { width: 4.5em; background: #fff; }
 
 /* 프로그램 타일 */
-#list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
-.card { background: var(--t, var(--tile)); border-radius: 20px; padding: 22px; display: flex; flex-direction: column; }
-.card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .8125rem; color: var(--sub); }
-.pts { font-size: 1.375rem; font-weight: 800; letter-spacing: -.02em; color: var(--ink); white-space: nowrap; }
-.card h3 { font-size: 1.1875rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.35; margin: 4px 0 12px; }
-details { margin-bottom: 18px; font-size: .875rem; }
+#list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)); }
+.card { background: var(--t, var(--tile)); border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; }
+.card-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: .75rem; color: var(--sub); }
+.pts { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; color: var(--ink); white-space: nowrap; }
+.card h3 { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.35; margin: 2px 0 6px; }
+details { margin-bottom: 10px; font-size: .8125rem; }
 summary { cursor: pointer; color: var(--sub); font-weight: 500; }
 .info { display: grid; grid-template-columns: 2.5em 1fr; gap: 4px 10px; margin: 10px 0 0; }
 .info dt { color: var(--sub); }
 .info dd { margin: 0; }
-.mine { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-size: .9375rem; }
+.mine { margin-top: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .8125rem; }
+.card .toggle, .card .pill-link { padding: 5px 11px; font-size: .8125rem; }
+.card input[type=number] { width: 3.2em; padding: 4px 6px; border-radius: 8px; margin-right: 2px; }
 .card .toggle { background: #fff; }
 .card .toggle:has(:checked) { background: var(--ink); }
 .card .toggle:has(:disabled) { background: var(--inha); }
-.apply { margin-top: auto; }
-.apply + .mine { margin-top: 10px; }
-.card button { background: #fff; padding: 8px 16px; font-size: .9375rem; }
+.card button { background: #fff; padding: 5px 11px; font-size: .8125rem; }
 .card button.primary { background: var(--inha); color: #fff; }
 .status { font-weight: 700; }
 .status.selected { color: var(--inha); }
@@ -163,7 +164,7 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
 .login-art { background: var(--inha); color: #fff; padding: 56px 48px 0; display: flex; flex-direction: column; overflow: hidden; }
 .login-art h1 { font-size: 3rem; }
 .login-art p { margin: 16px 0 0; font-size: 1.125rem; opacity: .9; }
-.login-art svg { margin-top: auto; width: min(100%, 420px); align-self: center; }
+.login-art .mascot { margin: auto 0 32px; width: min(60%, 260px); align-self: center; }
 .login-form { max-width: none; margin: 0; padding: 48px; display: grid; place-items: center; }
 .login-form form { width: min(100%, 360px); display: grid; gap: 16px; }
 .login-form h2 { margin: 0 0 8px; font-size: 1.75rem; }
@@ -181,7 +182,7 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
   .login-art { padding: 32px 24px 0; }
   .login-art h1 { font-size: 2rem; }
   .login-art p { font-size: 1rem; }
-  .login-art svg { width: 200px; margin-top: 12px; }
+  .login-art .mascot { width: 130px; margin: 12px 0 20px; }
   .login-form { padding: 32px 24px 48px; place-items: start center; }
 }
 @media (max-width: 640px) {
@@ -192,6 +193,6 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
   .icon { width: 56px; height: 56px; }
   .side { padding: 20px 20px 0; min-height: 170px; }
   .side-value b { font-size: 2.25rem; }
-  .side-icon { right: 16px; top: 62px; font-size: 2.25rem; }
+  .side-icon { right: 14px; top: 58px; width: 48px; }
   .side-title { font-size: 1rem; }
 }
