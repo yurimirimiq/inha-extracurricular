@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="INHA 비교과" width="420">
+  <img src="assets/logo.png" alt="INHA 비교과" width="400">
 </p>
 
 <h3 align="center">인하대 비교과 프로그램을 한눈에 보고, 내 예상 마일리지를 바로 확인</h3>
