@@ -2,7 +2,7 @@
 // 아래쪽 막대로 학생 화면과 교직원 화면을 오갈 수 있게 함. 전부 이 브라우저에만 저장되는 지어낸 데이터.
 const DEMO_FLAG = 'inha-demo';
 const DEMO_STUDENT = '12229001';
-const DEMO_STAFF = '시연 교직원';
+const DEMO_STAFF = '20190001';
 
 function seedDemo() {
   const day = 86400000, now = Date.now();
@@ -77,6 +77,7 @@ function seedDemo() {
   set(DEMO_FLAG, '1');
   set('inha-session', DEMO_STUDENT);
   set('inha-staff-session', DEMO_STAFF);
+  set('inha-staff-profile', { name: '박인하', dept: '교수학습개발센터' });
   set('inha-profiles-v1', { [DEMO_STUDENT]: { name: people[DEMO_STUDENT][0], dept: people[DEMO_STUDENT][1] } });
   set('inha-apply-demo-v1', applications);
   set('inha-team-posts-v1', posts);
@@ -84,7 +85,7 @@ function seedDemo() {
 }
 
 function endDemo() {
-  for (const key of [DEMO_FLAG, 'inha-session', 'inha-staff-session', 'inha-profiles-v1', 'inha-apply-demo-v1', 'inha-team-posts-v1', CUSTOM_KEY]) localStorage.removeItem(key);
+  for (const key of [DEMO_FLAG, 'inha-session', 'inha-staff-session', 'inha-staff-profile', 'inha-profiles-v1', 'inha-apply-demo-v1', 'inha-team-posts-v1', CUSTOM_KEY]) localStorage.removeItem(key);
 }
 
 // 시연 중이면 화면 아래에 막대를 붙임 (로그인 화면 제외)

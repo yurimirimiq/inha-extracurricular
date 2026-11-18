@@ -8,9 +8,17 @@ const option = (value, text = value) => Object.assign(el('option', '', text), { 
 let staff = 'guest';
 try { staff = localStorage.getItem('inha-staff-session'); } catch { /* 위 설명 */ }
 if (!staff) location.replace('login.html?staff');
-$('who').textContent = staff && staff !== 'guest' ? `${staff} 님` : '';
+// 맨 위에 로그인한 교직원 정보. 이름·소속은 시연 데이터에만 있고, 직접 로그인하면 사번만 나옴.
+let staffProfile = {};
+try { staffProfile = JSON.parse(localStorage.getItem('inha-staff-profile')) || {}; } catch { /* 위 설명 */ }
+$('who').textContent = staff && staff !== 'guest' ? `${staffProfile.name || staff} 님` : '';
+if (staff && staff !== 'guest') {
+  for (const [title, value] of [['로그인', '교직원'], ['사번', staff], ['이름', staffProfile.name], ['소속', staffProfile.dept]]) {
+    if (value) $('staffInfo').append(el('dt', '', title), el('dd', '', value));
+  }
+}
 $('logout').addEventListener('click', () => {
-  try { localStorage.removeItem('inha-staff-session'); } catch { /* 위 설명 */ }
+  try { localStorage.removeItem('inha-staff-session'); localStorage.removeItem('inha-staff-profile'); } catch { /* 위 설명 */ }
   location.href = 'login.html?staff';
 });
 
