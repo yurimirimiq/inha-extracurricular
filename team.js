@@ -8,7 +8,7 @@ try { session = localStorage.getItem('inha-session'); } catch { /* 저장소를 
 if (!session) location.replace('login.html');
 
 const program = PROGRAMS.find((p) => p.name === new URLSearchParams(location.search).get('p') && p.team);
-if (!program) location.replace('index.html');
+if (!program) location.replace('programs.html');
 
 // { 프로그램이름: [{ id, title, body, contact, author, at }] }
 let posts = {};

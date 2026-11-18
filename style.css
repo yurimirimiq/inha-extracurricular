@@ -40,6 +40,10 @@ a { color: inherit; text-underline-offset: 3px; }
 .nav, .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; padding: 8px 0 28px; }
 .top { padding-bottom: 4px; }
 .brand { font-size: 2rem; color: var(--inha); display: flex; align-items: center; gap: 8px; }
+.brand a { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.menu { display: flex; gap: 4px; margin-right: auto; margin-left: 12px; }
+.menu a { text-decoration: none; font-weight: 700; padding: 8px 14px; border-radius: 999px; color: var(--sub); }
+.menu a[aria-current] { color: var(--inha); background: var(--blue-soft); }
 .brand span { background: var(--inha); color: #fff; font-size: 1.0625rem; letter-spacing: .02em; padding: 4px 9px; border-radius: 7px; }
 .account { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .9375rem; }
 .account button { padding: 6px 14px; font-size: .875rem; }
@@ -58,7 +62,7 @@ a { color: inherit; text-underline-offset: 3px; }
 .hero-links { list-style: none; margin: 0; padding: 0; display: flex; border-top: 1px solid rgb(255 255 255 / .22); font-size: .875rem; }
 .hero-links li { flex: 1; text-align: center; padding: 14px 4px; }
 .hero-links li + li { box-shadow: -1px 0 0 rgb(255 255 255 / .22); }
-.side { position: relative; text-align: left; background: #fff; border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 8px 28px rgb(0 60 130 / .07); padding: 28px 28px 0; display: flex; flex-direction: column; min-height: 200px; }
+.side { position: relative; text-align: left; text-decoration: none; background: #fff; border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 8px 28px rgb(0 60 130 / .07); padding: 28px 28px 0; display: flex; flex-direction: column; min-height: 200px; }
 .side-title { font-size: 1.125rem; font-weight: 700; }
 .side-value { font-size: 1.25rem; font-weight: 700; margin-top: 10px; }
 .side-value b { font-size: 2.75rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-right: 4px; }
@@ -80,6 +84,25 @@ progress::-moz-progress-bar { background: var(--inha); border-radius: 999px; }
 .bar span { background: var(--c); }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 12px 0 0; padding: 0; list-style: none; font-size: .875rem; font-weight: 600; }
 .dot::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-right: 6px; }
+
+/* 홈의 설명 타일 */
+h2.first { margin-top: 12px; }
+.explains { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.explains.two { grid-template-columns: repeat(2, 1fr); }
+.explain { background: var(--t, var(--tile)); border-radius: 20px; padding: 22px 24px; text-decoration: none; display: block; }
+.explain img { width: 44px; display: block; margin-bottom: 10px; }
+.explain h3 { margin: 0 0 6px; font-size: 1.0625rem; font-weight: 800; letter-spacing: -.02em; }
+.explain p { margin: 0; font-size: .9375rem; color: #3f4651; }
+.explain .info { margin-top: 14px; font-size: .875rem; grid-template-columns: 3.2em 1fr; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: step; }
+.steps li { background: var(--tile); border-radius: 20px; padding: 22px 22px 24px; counter-increment: step; }
+.steps li::before { content: counter(step); display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--inha); color: #fff; font-weight: 800; margin-bottom: 12px; }
+.steps h3 { margin: 0 0 6px; font-size: 1.0625rem; font-weight: 800; letter-spacing: -.02em; }
+.steps p { margin: 0; font-size: .9375rem; color: #3f4651; }
+.cta { text-align: center; margin: 48px 0 0; }
+.button { display: inline-block; background: var(--inha); color: #fff; font-weight: 700; text-decoration: none; border-radius: 999px; padding: 14px 32px; }
+.record { margin: -8px 0 16px; }
+.record select { padding: 4px 10px; font-size: .875rem; }
 
 /* 역량 바로가기 */
 .shortcuts { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
@@ -174,6 +197,7 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
 .login-form .notice, .login-form .hint { margin: 0; font-size: .875rem; }
 
 @media (max-width: 860px) {
+  .steps { grid-template-columns: 1fr 1fr; }
   .dash { grid-template-columns: 1fr 1fr; }
   .hero { grid-column: 1 / -1; }
 }
@@ -190,7 +214,8 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
   h1 { font-size: 1.625rem; }
   .brand { font-size: 1.625rem; }
   .brand span { font-size: .875rem; padding: 3px 7px; }
-  .banners { grid-template-columns: 1fr; }
+  .banners, .explains, .explains.two, .steps { grid-template-columns: 1fr; }
+  .menu { order: 3; width: 100%; margin: 0; }
   .shortcuts { grid-template-columns: repeat(4, 1fr); gap: 16px 4px; }
   .icon { width: 56px; height: 56px; }
   .side { padding: 20px 20px 0; min-height: 170px; }

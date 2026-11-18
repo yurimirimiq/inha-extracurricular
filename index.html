@@ -5,17 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>인하 비교과 마일리지</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <main>
   <header class="nav">
-    <h1 class="brand"><span>INHA</span>비교과</h1>
-    <nav class="account">
+    <h1 class="brand"><a href="index.html" data-keep><span>INHA</span>비교과</a></h1>
+    <nav class="menu" aria-label="주요 메뉴">
+      <a href="index.html" data-keep aria-current="page">홈</a>
+      <a href="programs.html" data-keep>프로그램 신청</a>
+    </nav>
+    <div class="account">
       <span id="who"></span>
       <button type="button" id="logout">로그아웃</button>
       <a href="admin.html">교직원 화면</a>
-    </nav>
+    </div>
   </header>
 
   <p id="demoBanner" class="notice" hidden><strong>시연 모드예요.</strong> 가짜 학번 <span id="demoId"></span> 학생의 화면이에요. <a href="admin.html">교직원 화면으로</a></p>
@@ -38,23 +42,23 @@
       </ul>
     </section>
 
-    <button type="button" class="side" id="appliedTile">
+    <a class="side" href="programs.html?show=applied" data-keep>
       <span class="side-title">내 신청은?</span>
       <span class="side-value"><b id="appliedCount">0</b>건</span>
       <img class="side-icon" src="icons/memo.png" alt="">
       <span class="side-foot" id="appliedFoot">신청한 프로그램 보기</span>
-    </button>
-    <button type="button" class="side" id="teamTile">
+    </a>
+    <a class="side" href="programs.html?show=team" data-keep>
       <span class="side-title">팀원 구하는 글은?</span>
       <span class="side-value"><b id="teamCount">0</b>개</span>
       <img class="side-icon" src="icons/team.png" alt="">
       <span class="side-foot">팀 활동 프로그램 보기</span>
-    </button>
+    </a>
   </div>
 
   <div class="banners">
     <section class="banner blue">
-      <p>인재상에 맞게 12개 · 36마일리지를 채우면</p>
+      <p>12개 · 36마일리지를 채우면</p>
       <h3>참인재 인증 <span id="certCount">0 / 12</span>개</h3>
       <progress id="certPointsBar" max="36" value="0" aria-label="참인재 인증 마일리지"></progress>
     </section>
@@ -65,38 +69,100 @@
     </section>
   </div>
 
-  <h2 id="comp-title">어떤 역량을 채울까요?</h2>
-  <div class="shortcuts" id="shortcuts" role="group" aria-labelledby="comp-title">
-    <label class="shortcut"><input type="radio" name="comp" value="" checked><span class="icon"><img src="icons/all.png" alt=""></span>전체</label>
-    <label class="shortcut" id="teamShortcut"><input type="checkbox" id="teamOnly"><span class="icon"><img src="icons/team.png" alt=""></span>팀 활동</label>
+  <h2>인하 더 배움(비교과)이 <em>뭐예요?</em></h2>
+  <div class="explains three">
+    <section class="explain">
+      <h3>수업 밖에서 배우는 프로그램</h3>
+      <p>'인하 더 배움'은 인하대 비교과의 이름이에요. 정규 수업과 따로 열리는 교육 프로그램이고, 올해는 19개 부서가 약 94개를 운영해요.</p>
+    </section>
+    <section class="explain">
+      <h3>대부분 무료</h3>
+      <p>인하대 학생이면 대부분의 프로그램을 참가비 없이 들을 수 있어요. 멘토링, 경진대회, 특강, 온라인 강좌, 봉사까지 종류가 다양해요.</p>
+    </section>
+    <section class="explain">
+      <h3>이수하면 증명서</h3>
+      <p>'비교과 프로그램 이수증명서'를 무료로 뽑을 수 있어요. 취업할 때 교내 활동 증빙으로 쓸 수 있어요. 인터넷 증명서 발급(certpia.inha.ac.kr)에서 받아요.</p>
+    </section>
   </div>
 
-  <h2 id="list-title">지금 신청할 수 있는 <em>프로그램</em> <small id="count"></small></h2>
-  <div class="filters">
-    <div class="pills" role="radiogroup" aria-label="시기">
-      <label><input type="radio" name="when" value="term" checked>이번 학기</label>
-      <label><input type="radio" name="when" value="month">이번 달</label>
-      <label><input type="radio" name="when" value="all">전체 시기</label>
-    </div>
-    <label class="toggle"><input type="checkbox" id="appliedOnly">신청한 것만</label>
-    <label class="toggle"><input type="checkbox" id="mineOnly">참여한 것만</label>
-    <select id="dept" aria-label="주관부서"><option value="">모든 부서</option></select>
-    <input type="search" id="q" placeholder="프로그램 이름 검색" aria-label="프로그램 이름 검색">
+  <h2>프로그램은 <em>6대 핵심역량</em>으로 나뉘어요</h2>
+  <div class="explains">
+    <a class="explain" data-comp="자율책임" href="programs.html?comp=자율책임" data-keep>
+      <img src="icons/compass.png" alt="">
+      <h3>자율책임</h3>
+      <p>스스로 관리하고 돌아보며 주도적으로 공부하는 힘</p>
+    </a>
+    <a class="explain" data-comp="의사소통" href="programs.html?comp=의사소통" data-keep>
+      <img src="icons/speech.png" alt="">
+      <h3>의사소통</h3>
+      <p>분명하게 표현하고 상대를 이해하며 협의를 이끄는 힘</p>
+    </a>
+    <a class="explain" data-comp="창의사고" href="programs.html?comp=창의사고" data-keep>
+      <img src="icons/bulb.png" alt="">
+      <h3>창의사고</h3>
+      <p>새로운 관점으로 문제를 찾고 해결안을 만드는 힘</p>
+    </a>
+    <a class="explain" data-comp="지식활용" href="programs.html?comp=지식활용" data-keep>
+      <img src="icons/books.png" alt="">
+      <h3>지식활용</h3>
+      <p>지식과 정보를 모아 목적에 맞게 분석하고 쓰는 힘</p>
+    </a>
+    <a class="explain" data-comp="공감협동" href="programs.html?comp=공감협동" data-keep>
+      <img src="icons/handshake.png" alt="">
+      <h3>공감협동</h3>
+      <p>다른 사람을 이해하고 협력하며 갈등을 조정하는 힘</p>
+    </a>
+    <a class="explain" data-comp="글로벌" href="programs.html?comp=글로벌" data-keep>
+      <img src="icons/globe.png" alt="">
+      <h3>글로벌</h3>
+      <p>문화의 다양성을 존중하고 세계의 흐름을 받아들이는 힘</p>
+    </a>
   </div>
-  <ul id="list" aria-labelledby="list-title"></ul>
-  <p id="empty" class="empty" hidden>조건에 맞는 프로그램이 없어요. 시기를 "전체 시기"로 바꾸거나 필터를 풀어보세요.</p>
+  <p class="hint">역량을 누르면 그 역량의 프로그램만 볼 수 있어요. 학교는 인식 → 개발 → 고취 → 유지 단계 순서로 듣는 걸 권장해요.</p>
+
+  <h2><em>마일리지</em>는 이렇게 쌓여요</h2>
+  <ol class="steps">
+    <li><h3>신청</h3><p>인하포털의 비교과과정이나 주관부서 홈페이지에서 신청해요. 프로그램마다 신청하는 곳이 달라요.</p></li>
+    <li><h3>참여하고 이수</h3><p>프로그램을 끝까지 마치면 이수예요. 프로그램 하나에 1~6마일리지가 걸려 있어요.</p></li>
+    <li><h3>3주 안에 반영</h3><p>프로그램이 끝나고 3주 안에 주관부서가 이수를 입력해요. 3주가 지나도 안 바뀌면 주관부서에 문의하세요.</p></li>
+    <li><h3>끝난 날 기준으로 학기 구분</h3><p>1~6월에 끝나면 1학기, 7~12월에 끝나면 2학기 마일리지예요. 5월에 시작해 8월에 끝나면 2학기로 들어가요.</p></li>
+  </ol>
+
+  <h2>마일리지로 <em>받을 수 있는 것</em></h2>
+  <div class="explains two">
+    <section class="explain" data-comp="창의사고">
+      <h3>마일리지 장학금</h3>
+      <p>학기마다 50명에게 총 1천만 원을 줘요. 한 명당 10만~70만 원이에요.</p>
+      <dl class="info">
+        <dt>점수</dt><dd>이수 마일리지 + 가산점(역량을 골고루 들었는지, 핵심역량진단) + 결과보고서(최대 30점)</dd>
+        <dt>신청</dt><dd>1학기분은 7월, 2학기분은 1월 말~2월 초에 인하포털에서</dd>
+        <dt>참고</dt><dd>최근 두 학기는 약 51점부터 받았어요</dd>
+      </dl>
+    </section>
+    <section class="explain" data-comp="자율책임">
+      <h3>참인재 인증</h3>
+      <p>인하대 인재상에 맞게 성실히 이수했다는 인증이에요. 성적증명서에 '참인재 인증'이 적혀요.</p>
+      <dl class="info">
+        <dt>비교과</dt><dd>핵심역량 프로그램 12개(36마일리지) 이상</dd>
+        <dt>진단</dt><dd>핵심역량진단과 전공능력진단을 각 3회 이상</dd>
+        <dt>그 외</dt><dd>5개 학기 이상 등록, 98학점 이상, 평점 4.0 이상</dd>
+      </dl>
+    </section>
+  </div>
+
+  <p class="cta"><a class="button" href="programs.html" data-keep>프로그램 보러 가기</a></p>
 </main>
 
 <footer>
   <div>
     <p><strong>지금은 시험 버전이에요.</strong> 신청하기를 눌러도 학교에 접수되지 않고, 기록은 이 브라우저에만 저장돼요. 실제 신청은 각 프로그램의 신청 방법대로 해주세요.</p>
-    <p>인하대학교 공식 서비스가 아니에요. 자료는 「2026 인하 더 배움(비교과) 프로그램 가이드북」(교육기획팀)을 옮긴 것이고, 실제 일정과 마일리지는 달라질 수 있어요.
+    <p>인하대학교 공식 서비스가 아니에요. 내용은 「2026 인하 더 배움(비교과) 프로그램 가이드북」(교육기획팀)을 옮겨 정리한 것이고, 실제 일정과 마일리지는 달라질 수 있어요.
       확정 마일리지는 인하포털 → 학사행정 → 비교과과정에서 확인하세요.</p>
-    <p>마일리지는 프로그램이 끝난 날 기준이에요 (1~6월 1학기, 7~12월 2학기). 장학금 점수는 마일리지에 가산점과 결과보고서(최대 30점)를 더한 값이고, 최근 두 학기는 약 51점부터 받았어요.</p>
   </div>
 </footer>
-<script src="data.js?v=6"></script>
-<script src="logic.js?v=6"></script>
-<script src="app.js?v=6"></script>
+<script src="data.js?v=7"></script>
+<script src="logic.js?v=7"></script>
+<script src="common.js?v=7"></script>
+<script src="home.js?v=7"></script>
 </body>
 </html>

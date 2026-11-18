@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>프로그램 신청 · 인하 비교과 마일리지</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="style.css?v=7">
+</head>
+<body>
+<main>
+  <header class="nav">
+    <h1 class="brand"><a href="index.html" data-keep><span>INHA</span>비교과</a></h1>
+    <nav class="menu" aria-label="주요 메뉴">
+      <a href="index.html" data-keep>홈</a>
+      <a href="programs.html" data-keep aria-current="page">프로그램 신청</a>
+    </nav>
+    <div class="account">
+      <span id="who"></span>
+      <button type="button" id="logout">로그아웃</button>
+      <a href="admin.html">교직원 화면</a>
+    </div>
+  </header>
+
+  <p id="demoBanner" class="notice" hidden><strong>시연 모드예요.</strong> 가짜 학번 <span id="demoId"></span> 학생의 화면이에요. <a href="admin.html">교직원 화면으로</a></p>
+
+  <h2 id="comp-title" class="first">어떤 역량을 채울까요?</h2>
+  <div class="shortcuts" id="shortcuts" role="group" aria-labelledby="comp-title">
+    <label class="shortcut"><input type="radio" name="comp" value="" checked><span class="icon"><img src="icons/all.png" alt=""></span>전체</label>
+    <label class="shortcut" id="teamShortcut"><input type="checkbox" id="teamOnly"><span class="icon"><img src="icons/team.png" alt=""></span>팀 활동</label>
+  </div>
+
+  <h2 id="list-title">지금 신청할 수 있는 <em>프로그램</em> <small id="count"></small></h2>
+  <div class="filters">
+    <div class="pills" role="radiogroup" aria-label="시기">
+      <label><input type="radio" name="when" value="term" checked>이번 학기</label>
+      <label><input type="radio" name="when" value="month">이번 달</label>
+      <label><input type="radio" name="when" value="all">전체 시기</label>
+    </div>
+    <label class="toggle"><input type="checkbox" id="appliedOnly">신청한 것만</label>
+    <label class="toggle"><input type="checkbox" id="mineOnly">참여한 것만</label>
+    <select id="dept" aria-label="주관부서"><option value="">모든 부서</option></select>
+    <input type="search" id="q" placeholder="프로그램 이름 검색" aria-label="프로그램 이름 검색">
+  </div>
+  <p class="hint record">"참여"를 누르면 <select id="term" aria-label="참여 기록을 남길 학기"></select> 마일리지로 기록돼요.</p>
+  <ul id="list" aria-labelledby="list-title"></ul>
+  <p id="empty" class="empty" hidden>조건에 맞는 프로그램이 없어요. 시기를 "전체 시기"로 바꾸거나 필터를 풀어보세요.</p>
+</main>
+
+<footer>
+  <div>
+    <p><strong>지금은 시험 버전이에요.</strong> 신청하기를 눌러도 학교에 접수되지 않고, 기록은 이 브라우저에만 저장돼요. 실제 신청은 각 프로그램의 신청 방법대로 해주세요.</p>
+    <p>인하대학교 공식 서비스가 아니에요. 내용은 「2026 인하 더 배움(비교과) 프로그램 가이드북」(교육기획팀)을 옮겨 정리한 것이고, 실제 일정과 마일리지는 달라질 수 있어요.
+      확정 마일리지는 인하포털 → 학사행정 → 비교과과정에서 확인하세요.</p>
+  </div>
+</footer>
+<script src="data.js?v=7"></script>
+<script src="logic.js?v=7"></script>
+<script src="common.js?v=7"></script>
+<script src="programs.js?v=7"></script>
+</body>
+</html>

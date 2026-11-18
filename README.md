@@ -10,7 +10,9 @@
 
 - `data.js` — 프로그램 목록 (2026 가이드북 기준). 프로그램을 고치거나 추가할 때 여기만 수정.
 - `logic.js` — 마일리지 계산
-- `app.js`, `index.html` — 학생 화면
+- `index.html`, `home.js` — 홈: 내 마일리지 요약과 비교과·마일리지 설명
+- `programs.html`, `programs.js` — 프로그램 신청 화면
+- `common.js` — 두 화면이 같이 쓰는 로그인 확인·저장 코드
 - `team.js`, `team.html` — 팀 프로그램별 팀원 구하기 글 (시험 버전: 이 브라우저에만 저장)
 - `icons/` — 3D 이모지 그림 (Microsoft Fluent Emoji, MIT 라이선스)
 - `login.html` — 로그인 화면 (시험 버전: 아무 값이나 통과, 비밀번호는 저장 안 함)
