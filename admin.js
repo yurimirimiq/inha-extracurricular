@@ -54,6 +54,7 @@ function render() {
   }
   $('rows').replaceChildren(...rows);
   $('count').textContent = `${rows.length}건`;
+  $('confirmedCount').textContent = rows.length;
   $('empty').hidden = rows.length > 0;
 }
 
@@ -89,6 +90,7 @@ function renderApplications() {
   rows.sort((a, b) => b[0] - a[0]);
   $('applyRows').replaceChildren(...rows.map(([, tr]) => tr));
   $('applyCount').textContent = `${rows.length}건`;
+  $('waitingCount').textContent = Object.values(applications).flatMap((a) => Object.values(a)).filter((a) => a.status === 'applied').length;
   $('applyEmpty').hidden = rows.length > 0;
 }
 

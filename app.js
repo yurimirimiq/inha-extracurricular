@@ -50,11 +50,14 @@ for (let y = now.getFullYear(); y >= now.getFullYear() - 4; y--) {
 }
 $('term').value = mileageTerm(now);
 Object.keys(DEPTS).forEach((d) => $('dept').append(option(d)));
+const ICONS = { 자율책임: '🧭', 의사소통: '💬', 창의사고: '💡', 지식활용: '📚', 공감협동: '🤝', 글로벌: '🌏' };
 for (const c of COMPS) {
-  const label = el('label', 'dot');
+  const label = el('label', 'shortcut');
+  const icon = el('span', 'icon', ICONS[c]);
+  icon.setAttribute('aria-hidden', 'true');
   label.dataset.comp = c;
-  label.append(Object.assign(document.createElement('input'), { type: 'radio', name: 'comp', value: c }), c);
-  $('compPills').append(label);
+  label.append(Object.assign(document.createElement('input'), { type: 'radio', name: 'comp', value: c }), icon, c);
+  $('teamShortcut').before(label);
 }
 
 const monthsText = (p) => {
@@ -75,11 +78,11 @@ function renderSummary() {
   const s = summarize(effective(), PROGRAMS, term);
   const sure = Object.values(confirmed[term] || {}).reduce((a, b) => a + b, 0);
   $('termTotal').textContent = s.termTotal;
-  $('confirmedNote').textContent = sure ? `이 중 ${sure}점은 교직원이 확정했어요` : '';
+  $('heroCount').textContent = Object.keys(effective()[term] || {}).length;
+  $('heroSure').textContent = sure;
   $('certPoints').textContent = `${s.certPoints} / 36`;
   $('certPointsBar').value = Math.min(s.certPoints, 36);
   $('certCount').textContent = `${s.certCount} / 12`;
-  $('certCountBar').value = Math.min(s.certCount, 12);
 
   const used = COMPS.filter((c) => s.byComp[c]);
   $('mixBar').replaceChildren(...used.map((c) => {
@@ -90,10 +93,20 @@ function renderSummary() {
   }));
   $('mixLegend').replaceChildren(...(used.length
     ? used.map((c) => { const li = el('li', 'dot', `${c} ${s.byComp[c]}점`); li.dataset.comp = c; return li; })
-    : [el('li', '', '아래에서 참여한 프로그램을 체크하면 역량별로 나눠서 보여줘요.')]));
+    : [el('li', '', '참여한 프로그램을 체크하면 여기에 나눠서 보여줘요.')]));
+}
+
+// 위쪽 타일: 내 신청 건수와 팀원 구하는 글 수
+function renderSide() {
+  const mine = Object.values(applications).map((a) => a[me]).filter(Boolean);
+  const count = (status) => mine.filter((a) => a.status === status).length;
+  $('appliedCount').textContent = mine.length;
+  $('appliedFoot').textContent = mine.length ? `선발 ${count('selected')}건 · 대기 ${count('applied')}건` : '신청한 프로그램 보기';
+  $('teamCount').textContent = Object.values(teamPosts).reduce((n, list) => n + list.length, 0);
 }
 
 function renderList() {
+  renderSide();
   const term = $('term').value;
   const checked = effective()[term] || {};
   const sure = confirmed[term] || {};
@@ -106,28 +119,29 @@ function renderList() {
     (!$('dept').value || p.dept === $('dept').value) &&
     (!$('teamOnly').checked || p.team) &&
     (!$('mineOnly').checked || p.name in checked) &&
+    (!$('appliedOnly').checked || applications[p.name]?.[me]) &&
     (!q || p.name.toLowerCase().includes(q)));
 
   $('count').textContent = `${shown.length}개`;
   $('empty').hidden = shown.length > 0;
   $('list').replaceChildren(...shown.map((p) => {
     const li = el('li', 'card');
+    li.dataset.comp = p.comp;
     const done = p.name in checked;
     // 교직원이 확정한 건 학생이 못 바꿈
     const locked = p.name in sure;
 
     const top = el('div', 'card-top');
-    const compLabel = el('span', 'dot', p.comp);
-    compLabel.dataset.comp = p.comp;
-    top.append(compLabel, el('span', 'pts', `${p.points}점`));
+    top.append(el('span', '', `${p.comp} · ${monthsText(p)}`), el('span', 'pts', `${p.points}점`));
 
     const info = el('dl', 'info');
     const row = (title, ...detail) => { const dd = el('dd'); dd.append(...detail); info.append(el('dt', '', title), dd); };
     row('부서', Object.assign(el('a', '', p.dept), { href: DEPTS[p.dept], target: '_blank', rel: 'noopener' }));
-    row('시기', monthsText(p));
     row('신청', p.apply);
     if (p.team) row('팀', p.team);
     if (p.note) row('참고', p.note);
+    const more = el('details');
+    more.append(el('summary', '', '신청 방법 보기'), info);
 
     const apply = el('div', 'mine apply');
     const application = applications[p.name]?.[me];
@@ -180,12 +194,22 @@ function renderList() {
       mine.append(pointsLabel);
     }
 
-    li.append(top, el('h3', '', p.name), info, apply, mine);
+    li.append(top, el('h3', '', p.name), more, apply, mine);
     return li;
   }));
 }
 
 document.querySelector('.filters').addEventListener('change', renderList);
+$('shortcuts').addEventListener('change', renderList);
+// 위쪽 타일을 누르면 해당 필터를 켜고 목록으로 내려감
+for (const [tile, filter] of [['appliedTile', 'appliedOnly'], ['teamTile', 'teamOnly']]) {
+  $(tile).addEventListener('click', () => {
+    $(filter).checked = true;
+    document.querySelector('[name=when][value=all]').checked = true;
+    renderList();
+    $('list-title').scrollIntoView({ behavior: 'smooth' });
+  });
+}
 $('q').addEventListener('input', renderList);
 $('term').addEventListener('change', () => { renderSummary(); renderList(); });
 renderSummary();

@@ -16,7 +16,18 @@
   <p class="sub">신청한 학생을 선발하고, 프로그램이 끝나면 이수자의 마일리지를 확정하는 흐름을 보여주는 화면이에요.</p>
   <p class="notice"><strong>가짜 데이터로만 써주세요.</strong> 로그인이 없고, 입력한 내용은 이 브라우저에만 저장돼요. 실제 학생의 학번은 넣지 마세요.</p>
 
-  <h2 id="apply-title" style="margin-top:32px">신청자 선발 <small id="applyCount"></small></h2>
+  <div class="banners">
+    <section class="banner blue">
+      <p>선발을 기다리는 신청</p>
+      <h3><span id="waitingCount">0</span>건</h3>
+    </section>
+    <section class="banner purple">
+      <p>마일리지를 확정한 기록</p>
+      <h3><span id="confirmedCount">0</span>건</h3>
+    </section>
+  </div>
+
+  <h2 id="apply-title">신청자 선발 <small id="applyCount"></small></h2>
   <div class="scroll">
     <table aria-labelledby="apply-title">
       <thead><tr><th>신청일</th><th>프로그램</th><th>신청자</th><th>상태</th><th></th></tr></thead>
