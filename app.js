@@ -32,6 +32,10 @@ if (isStudentId(demoId)) {
 }
 const effective = () => mergeRecords(records, confirmed);
 
+// 팀 프로그램 카드에 글 개수를 보여주려고 읽음 (쓰기는 team.js)
+let teamPosts = {};
+try { teamPosts = JSON.parse(localStorage.getItem('inha-team-posts-v1')) || {}; } catch { /* 위와 같음 */ }
+
 const option = (value, text = value) => Object.assign(document.createElement('option'), { value, textContent: text });
 for (let y = now.getFullYear(); y >= now.getFullYear() - 4; y--) {
   for (const t of [2, 1]) $('term').append(option(`${y}-${t}`, `${y}년 ${t}학기`));
@@ -122,6 +126,10 @@ function renderList() {
     const toggle = el('label', 'toggle');
     toggle.append(check, locked ? `이수 확정 ${sure[p.name]}점` : done ? '참여했어요 ✓' : '참여했어요');
     mine.append(toggle);
+    if (p.team) {
+      const n = (teamPosts[p.name] || []).length;
+      mine.append(Object.assign(el('a', 'pill-link', n ? `팀원 구하기 ${n}` : '팀원 구하기'), { href: `team.html?p=${encodeURIComponent(p.name)}` }));
+    }
     check.addEventListener('change', () => {
       records[term] ??= {};
       if (check.checked) records[term][p.name] = p.points; else delete records[term][p.name];

@@ -31,6 +31,9 @@ function summarize(records, programs, term) {
 
 const isStudentId = (text) => /^\d{8}$/.test(text);
 
+// 게시판 글쓴이 표시: 학번 전체 대신 입학 연도만 (12221234 → "22학번"). 인하대 학번이 12 + 입학 연도 두 자리로 시작한다고 가정함.
+const authorLabel = (studentId) => (isStudentId(studentId || '') ? `${studentId.slice(2, 4)}학번` : '익명');
+
 // 교직원이 붙여넣은 명단(줄바꿈·쉼표·공백 구분)을 학번 목록으로. 중복은 한 번만.
 function parseStudentIds(text) {
   const tokens = [...new Set(text.split(/[\s,;]+/).filter(Boolean))];
@@ -58,5 +61,5 @@ function mergeRecords(mine, confirmed) {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { mileageTerm, termMonths, runsIn, summarize, isStudentId, parseStudentIds, confirmedFor, mergeRecords };
+  module.exports = { mileageTerm, termMonths, runsIn, summarize, isStudentId, authorLabel, parseStudentIds, confirmedFor, mergeRecords };
 }

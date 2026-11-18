@@ -1,7 +1,7 @@
 // 실행: node test.js
 const assert = require('node:assert');
 const { PROGRAMS, DEPTS, COMPS } = require('./data.js');
-const { mileageTerm, termMonths, runsIn, summarize, parseStudentIds, confirmedFor, mergeRecords } =require('./logic.js');
+const { mileageTerm, termMonths, runsIn, summarize, parseStudentIds, confirmedFor, mergeRecords, authorLabel } = require('./logic.js');
 
 // 데이터 검사
 assert.equal(new Set(PROGRAMS.map((p) => p.name)).size, PROGRAMS.length, '프로그램 이름이 겹침');
@@ -57,5 +57,9 @@ assert.deepEqual(
   mergeRecords({ '2026-2': { '인하 튜터링': 2, '역사기행': 1 }, '2025-2': { 'BOOK새통': 1 } }, mine),
   { '2026-2': { '인하 튜터링': 4, '역사기행': 1 }, '2025-2': { 'BOOK새통': 1 }, '2026-1': { '국제도우미 Buddy': 3 } },
 );
+
+// 글쓴이 표시
+assert.equal(authorLabel('12221234'), '22학번');
+for (const odd of ['ㄷ', '', null, 'guest']) assert.equal(authorLabel(odd), '익명');
 
 console.log(`통과 (프로그램 ${PROGRAMS.length}개)`);
