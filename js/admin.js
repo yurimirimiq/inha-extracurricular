@@ -146,12 +146,12 @@ if (program) {
     // 신청이 활동 이름으로 묶여 있어서 이름이 겹치면 안 됨
     if (PROGRAMS.some((p) => p.name === name)) { $('message').textContent = `"${name}" 활동이 이미 있어요. 다른 이름으로 등록해 주세요.`; return; }
     // 값은 고르는 칸에서만 오게 하고, 점수는 1~30 사이로 맞춤 (저장된 값을 학생 화면이 그대로 씀)
-    if (!name || !(text('pDept') in DEPTS) || !COMPS.includes(text('pComp')) || !text('pApply')) return;
+    if (!name || !(text('pDept') in DEPTS) || !COMPS.includes(text('pComp'))) return;
     const added = {
       name, dept: text('pDept'), comp: text('pComp'),
       points: Math.min(30, Math.max(1, Math.round(Number($('pPoints').value)) || 1)),
       months: { term: TERM, vac: VAC, year: R(1, 12), any: ALL }[$('pWhen').value] ?? ALL,
-      apply: text('pApply'), custom: true,
+      custom: true,
     };
     if (text('pTeam')) added.team = text('pTeam');
     if (text('pNote')) added.note = text('pNote');

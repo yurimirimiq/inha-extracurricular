@@ -47,11 +47,10 @@ function renderList() {
     const info = el('dl', 'info');
     const row = (title, ...detail) => { const dd = el('dd'); dd.append(...detail); info.append(el('dt', '', title), dd); };
     row('부서', Object.assign(el('a', '', p.dept), { href: DEPTS[p.dept], target: '_blank', rel: 'noopener' }));
-    row('신청', p.apply);
     if (p.team) row('팀', p.team);
     if (p.note) row('참고', p.note);
     const more = el('details');
-    more.append(el('summary', '', '신청 방법 보기'), info);
+    more.append(el('summary', '', '자세히 보기'), info);
 
     // 학생은 신청만 함. 선발과 점수는 교직원 화면에서.
     const mine = el('div', 'mine');
