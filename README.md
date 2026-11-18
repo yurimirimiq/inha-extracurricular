@@ -15,6 +15,7 @@
 - `common.js` — 두 화면이 같이 쓰는 로그인 확인·저장 코드
 - `team.js`, `team.html` — 팀 프로그램별 팀원 구하기 글 (시험 버전: 이 브라우저에만 저장)
 - `icons/` — 3D 이모지 그림 (Microsoft Fluent Emoji, MIT 라이선스)
+- `mascot/` — 인하대 공식 마스코트 그림 (저작권은 인하대학교, 사용 조건은 폴더 안 README.txt)
 - `login.html` — 로그인 화면 (시험 버전: 아무 값이나 통과, 비밀번호는 저장 안 함)
 - `admin.js`, `admin.html` — 교직원 화면 (시연용, 가짜 데이터, 이 브라우저에만 저장)
 - `style.css` — 두 화면이 같이 쓰는 꾸밈

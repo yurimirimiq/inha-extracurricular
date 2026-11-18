@@ -187,7 +187,7 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
 .login-art { background: var(--inha); color: #fff; padding: 56px 48px 0; display: flex; flex-direction: column; overflow: hidden; }
 .login-art h1 { font-size: 3rem; }
 .login-art p { margin: 16px 0 0; font-size: 1.125rem; opacity: .9; }
-.login-art .mascot { margin: auto 0 32px; width: min(60%, 260px); align-self: center; }
+.login-art .mascot { margin: auto 0 40px; width: min(78%, 400px); align-self: center; }
 .login-form { max-width: none; margin: 0; padding: 48px; display: grid; place-items: center; }
 .login-form form { width: min(100%, 360px); display: grid; gap: 16px; }
 .login-form h2 { margin: 0 0 8px; font-size: 1.75rem; }
@@ -206,7 +206,7 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
   .login-art { padding: 32px 24px 0; }
   .login-art h1 { font-size: 2rem; }
   .login-art p { font-size: 1rem; }
-  .login-art .mascot { width: 130px; margin: 12px 0 20px; }
+  .login-art .mascot { width: 190px; margin: 16px 0 24px; }
   .login-form { padding: 32px 24px 48px; place-items: start center; }
 }
 @media (max-width: 640px) {
