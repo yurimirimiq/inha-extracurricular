@@ -8,17 +8,41 @@ const option = (value, text = value) => Object.assign(el('option', '', text), { 
 let staff = 'guest';
 try { staff = localStorage.getItem('inha-staff-session'); } catch { /* 위 설명 */ }
 if (!staff) location.replace('login.html?staff');
-// 맨 위에 로그인한 교직원 정보. 이름·소속은 시연 데이터에만 있고, 직접 로그인하면 사번만 나옴.
-let staffProfile = {};
-try { staffProfile = JSON.parse(localStorage.getItem('inha-staff-profile')) || {}; } catch { /* 위 설명 */ }
-$('who').textContent = staff && staff !== 'guest' ? `${staffProfile.name || staff} 님` : '';
-if (staff && staff !== 'guest') {
+// 맨 위에 로그인한 교직원 정보. 이름·소속은 교직원이 직접 적음.
+// { 사번: { name, dept } } 로 저장해서 로그아웃해도 남음 (학생의 마이페이지와 같은 방식).
+const STAFF_PROFILES_KEY = 'inha-staff-profiles-v1';
+let staffProfiles = {};
+try { staffProfiles = JSON.parse(localStorage.getItem(STAFF_PROFILES_KEY)) || {}; } catch { /* 위 설명 */ }
+const staffProfile = staffProfiles[staff] || {};
+function renderStaff() {
+  const known = staff && staff !== 'guest';
+  $('who').textContent = known ? `${staffProfile.name || staff} 님` : '';
+  $('staffBox').hidden = !known;
+  $('staffInfo').replaceChildren();
   for (const [title, value] of [['로그인', '교직원'], ['사번', staff], ['이름', staffProfile.name], ['소속', staffProfile.dept]]) {
     if (value) $('staffInfo').append(el('dt', '', title), el('dd', '', value));
   }
+  $('editStaff').textContent = staffProfile.name || staffProfile.dept ? '정보 수정' : '이름·소속 적기';
 }
+const showStaffForm = (open) => {
+  $('staffForm').hidden = !open;
+  $('editStaff').setAttribute('aria-expanded', open);
+  if (open) { $('staffName').value = staffProfile.name || ''; $('staffDept').value = staffProfile.dept || ''; $('staffName').focus(); }
+};
+Object.keys(DEPTS).forEach((d) => $('deptList').append(Object.assign(el('option'), { value: d })));
+$('editStaff').addEventListener('click', () => showStaffForm($('staffForm').hidden));
+$('cancelStaff').addEventListener('click', () => showStaffForm(false));
+$('staffForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  staffProfiles[staff] = Object.assign(staffProfile, { name: $('staffName').value.trim(), dept: $('staffDept').value.trim() });
+  try { localStorage.setItem(STAFF_PROFILES_KEY, JSON.stringify(staffProfiles)); } catch { /* 위 설명 */ }
+  showStaffForm(false);
+  renderStaff();
+  say('저장했어요.');
+});
+renderStaff();
 $('logout').addEventListener('click', () => {
-  try { localStorage.removeItem('inha-staff-session'); localStorage.removeItem('inha-staff-profile'); } catch { /* 위 설명 */ }
+  try { localStorage.removeItem('inha-staff-session'); } catch { /* 위 설명 */ }
   location.href = 'login.html?staff';
 });
 

@@ -78,7 +78,7 @@ function seedDemo() {
   set(DEMO_FLAG, '1');
   set('inha-session', DEMO_STUDENT);
   set('inha-staff-session', DEMO_STAFF);
-  set('inha-staff-profile', { name: '박인하', dept: '교수학습개발센터' });
+  set('inha-staff-profiles-v1', { [DEMO_STAFF]: { name: '박인하', dept: '교수학습개발센터' } });
   set('inha-profiles-v1', { [DEMO_STUDENT]: { name: people[DEMO_STUDENT][0], dept: people[DEMO_STUDENT][1] } });
   set('inha-apply-demo-v1', applications);
   set('inha-team-posts-v1', posts);
