@@ -5,55 +5,106 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>교직원 화면 (시연용) · 인하 비교과 마일리지</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css?v=17">
+<link rel="stylesheet" href="css/style.css?v=18">
 </head>
 <body>
 <main>
-  <header class="top">
-    <h1>교직원 화면 <span class="tag">시연용</span></h1>
-    <a href="index.html">학생 화면으로</a>
-  </header>
-  <p class="sub">신청한 학생을 선발하고, 프로그램을 마친 학생에게 마일리지를 부여하는 화면이에요.</p>
-  <p class="notice"><strong>가짜 데이터로만 써주세요.</strong> 로그인이 없고, 신청 내용은 이 브라우저에 저장된 것만 보여요. 실제 학생의 정보는 넣지 마세요.</p>
-
-  <div class="banners">
-    <section class="banner blue">
-      <p>선발을 기다리는 신청</p>
-      <h3><span id="waitingCount">0</span>건</h3>
-    </section>
-    <section class="banner purple">
-      <p>마일리지를 부여한 신청</p>
-      <h3><span id="grantedCount">0</span>건</h3>
-    </section>
-  </div>
-
-  <h2 id="apply-title">신청자 <small id="applyCount"></small></h2>
-  <div class="filters">
-    <select id="program" aria-label="프로그램"><option value="">모든 프로그램</option></select>
-    <div class="pills" role="radiogroup" aria-label="상태">
-      <label><input type="radio" name="state" value="" checked>전체</label>
-      <label><input type="radio" name="state" value="applied">선발 대기</label>
-      <label><input type="radio" name="state" value="selected">선발됨</label>
-      <label><input type="radio" name="state" value="rejected">미선발</label>
+  <header class="nav">
+    <h1 class="brand"><a href="admin.html"><span>INHA</span>비교과</a></h1>
+    <nav class="menu" aria-label="주요 메뉴">
+      <a href="admin.html" aria-current="page">교직원 <span class="tag">시연용</span></a>
+    </nav>
+    <div class="account">
+      <span id="who"></span>
+      <button type="button" id="logout">로그아웃</button>
+      <a href="index.html">학생 화면</a>
     </div>
-  </div>
-  <div class="scroll">
-    <table aria-labelledby="apply-title">
-      <thead><tr><th>학과</th><th>학번</th><th>이름</th><th>프로그램</th><th>신청일</th><th>상태</th><th>선발</th><th>마일리지 부여</th></tr></thead>
-      <tbody id="applyRows"></tbody>
-    </table>
-    <p id="applyEmpty" class="empty">조건에 맞는 신청이 없어요. 학생 화면에서 "신청하기"를 누르거나 아래 "예시 데이터 채우기"를 눌러보세요.</p>
-  </div>
-  <p class="hint">선발한 학생에게만 마일리지를 부여할 수 있어요. 부여한 점수는 오늘 날짜 기준 학기(<span id="termLabel"></span>) 마일리지로 학생 화면에 바로 보여요.</p>
-
+  </header>
+  <p class="notice"><strong>가짜 데이터로만 써주세요.</strong> 진짜 로그인이 아니고, 신청과 등록한 활동은 이 브라우저에만 저장돼요. 실제 학생의 정보는 넣지 마세요.</p>
   <p id="message" role="status"></p>
-  <div class="actions">
-    <button type="button" id="seed">예시 데이터 채우기</button>
-    <button type="button" id="clear">모두 지우기</button>
-  </div>
+
+  <!-- 목록: 활동별 신청 인원 -->
+  <section id="listView" hidden>
+    <div class="banners">
+      <section class="banner blue">
+        <p>선발을 기다리는 신청</p>
+        <h3><span id="waitingCount">0</span>건</h3>
+      </section>
+      <section class="banner purple">
+        <p>마일리지를 부여한 신청</p>
+        <h3><span id="grantedCount">0</span>건</h3>
+      </section>
+    </div>
+
+    <h2 id="list-title">비교과 활동 <small id="count"></small></h2>
+    <details class="register" id="register">
+      <summary>새 활동 등록</summary>
+      <form id="programForm" class="fields">
+        <label class="wide">활동 이름
+          <input id="pName" maxlength="60" required placeholder="예: AI 활용 글쓰기 워크숍"></label>
+        <label>주관부서
+          <select id="pDept" required></select></label>
+        <label>핵심역량
+          <select id="pComp" required></select></label>
+        <label>마일리지 (1~30점)
+          <input id="pPoints" type="number" min="1" max="30" value="1" required></label>
+        <label>운영 시기
+          <select id="pWhen">
+            <option value="term">학기 중 (3~6월, 9~12월)</option>
+            <option value="vac">방학 (7~8월, 12~2월)</option>
+            <option value="year">연중</option>
+            <option value="any">상시 (공지 확인)</option>
+          </select></label>
+        <label class="wide">신청 방법
+          <input id="pApply" maxlength="120" required placeholder="예: 인하포털 → 학사행정 → 비교과과정에서 신청"></label>
+        <label>팀 구성 (팀 활동일 때만)
+          <input id="pTeam" maxlength="40" placeholder="예: 3~5명 팀"></label>
+        <label>참고 (선택)
+          <input id="pNote" maxlength="80"></label>
+        <div class="actions wide"><button type="submit" class="primary">등록</button></div>
+        <p class="hint wide">등록하면 학생의 프로그램 신청 화면에 바로 나타나요.</p>
+      </form>
+    </details>
+    <div class="filters">
+      <label class="toggle"><input type="checkbox" id="appliedOnly">신청 있는 것만</label>
+      <label class="toggle"><input type="checkbox" id="customOnly">내가 등록한 것만</label>
+      <input type="search" id="q" placeholder="활동 이름 검색" aria-label="활동 이름 검색">
+    </div>
+    <ul id="list" aria-labelledby="list-title"></ul>
+    <p id="empty" class="empty" hidden>조건에 맞는 활동이 없어요.</p>
+
+    <div class="actions" style="margin-top:32px">
+      <button type="button" id="seed">예시 신청 채우기</button>
+      <button type="button" id="clear">신청 모두 지우기</button>
+    </div>
+  </section>
+
+  <!-- 활동 하나: 신청자 선발과 마일리지 부여 -->
+  <section id="detailView" hidden>
+    <p><a href="admin.html">← 활동 목록으로</a></p>
+    <h2 id="apply-title" class="first"><span id="programName"></span> <small id="applyCount"></small></h2>
+    <p class="sub" id="programInfo"></p>
+    <div class="filters">
+      <div class="pills" role="radiogroup" aria-label="상태">
+        <label><input type="radio" name="state" value="" checked>전체</label>
+        <label><input type="radio" name="state" value="applied">선발 대기</label>
+        <label><input type="radio" name="state" value="selected">선발됨</label>
+        <label><input type="radio" name="state" value="rejected">미선발</label>
+      </div>
+    </div>
+    <div class="scroll">
+      <table aria-labelledby="apply-title">
+        <thead><tr><th>학과</th><th>학번</th><th>이름</th><th>신청일</th><th>상태</th><th>선발</th><th>마일리지 부여</th></tr></thead>
+        <tbody id="applyRows"></tbody>
+      </table>
+      <p id="applyEmpty" class="empty">조건에 맞는 신청이 없어요.</p>
+    </div>
+    <p class="hint">선발한 학생에게만 마일리지를 부여할 수 있어요. 부여한 점수는 오늘 날짜 기준 학기(<span id="termLabel"></span>) 마일리지로 학생 화면에 바로 보여요.</p>
+    <div class="actions" style="margin-top:32px"><button type="button" id="removeProgram" hidden>이 활동 삭제</button></div>
+  </section>
 </main>
-<script src="js/data.js?v=17"></script>
-<script src="js/logic.js?v=17"></script>
-<script src="js/admin.js?v=17"></script>
+<script src="js/data.js?v=18"></script>
+<script src="js/logic.js?v=18"></script>
+<script src="js/admin.js?v=18"></script>
 </body>
 </html>

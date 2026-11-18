@@ -160,4 +160,13 @@ const PROGRAMS = [
   ['논문 작성 쉽게하기', '학술정보운영팀', '지식활용', 1, TERM, ICLASS],
 ].map(([name, dept, comp, points, months, apply, extra]) => ({ name, dept, comp, points, months, apply, ...extra }));
 
+// 교직원 화면에서 등록한 프로그램을 목록에 합침 (모든 화면이 이 파일을 먼저 불러옴).
+// shortcut: 이 브라우저에만 저장돼서 다른 사람에게는 안 보임. 서버를 붙이면 서버에서 받아오게 바꿈.
+const CUSTOM_KEY = 'inha-custom-programs-v1';
+if (typeof window !== 'undefined') {
+  try { PROGRAMS.push(...(JSON.parse(localStorage.getItem(CUSTOM_KEY)) || [])); } catch { /* 저장소를 못 쓰면 가이드북 목록만 */ }
+  // 다른 탭에서 등록·삭제하면 목록을 처음부터 다시 만듦
+  window.addEventListener('storage', (e) => { if (e.key === CUSTOM_KEY) location.reload(); });
+}
+
 if (typeof module !== 'undefined') module.exports = { PROGRAMS, DEPTS, COMPS };
