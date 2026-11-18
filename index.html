@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인하 비교과 마일리지</title>
+<style>
+  :root {
+    --bg: #f5f7fa; --card: #fff; --text: #1a2330; --muted: #5b6676; --line: #dde2ea;
+    --brand: #00467f; --brand-soft: #e6eef6; --team: #8a4b00; --team-soft: #fff1dc;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #11161d; --card: #1a212b; --text: #e8edf3; --muted: #9aa6b5; --line: #2c3644;
+      --brand: #7db8ee; --brand-soft: #1d2f42; --team: #f0b96a; --team-soft: #3a2c15;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.1rem; margin: 32px 0 12px; }
+  .sub { color: var(--muted); margin: 0 0 20px; font-size: .9rem; }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-top: 12px; }
+  .stat b { display: block; font-size: 1.8rem; color: var(--brand); line-height: 1.2; }
+  .stat span { color: var(--muted); font-size: .85rem; }
+  progress { width: 100%; height: 8px; accent-color: var(--brand); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip { background: var(--brand-soft); color: var(--brand); border-radius: 999px; padding: 2px 10px; font-size: .8rem; }
+  .chip.team { background: var(--team-soft); color: var(--team); }
+  .chip.zero { opacity: .5; }
+  .hint { color: var(--muted); font-size: .85rem; margin: 12px 0 0; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 12px; }
+  label { font-size: .9rem; }
+  select, input[type=search], input[type=number] {
+    font: inherit; color: inherit; background: var(--card);
+    border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px;
+  }
+  input[type=search] { flex: 1 1 160px; min-width: 0; }
+  input[type=number] { width: 4.5em; }
+  #list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  #list li { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+  #list li.done { border-color: var(--brand); }
+  .name { font-weight: 600; }
+  .meta { color: var(--muted); font-size: .85rem; margin: 0; }
+  .mine { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+  a { color: var(--brand); }
+  footer { color: var(--muted); font-size: .8rem; margin-top: 32px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>인하 비교과 마일리지</h1>
+  <p class="sub">참여한 프로그램을 체크하면 예상 마일리지를 바로 볼 수 있어요. 공식 기록은 아니에요.</p>
+
+  <section class="panel" aria-labelledby="mine-title">
+    <label id="mine-title">내 마일리지 학기
+      <select id="term"></select>
+    </label>
+    <div class="stats">
+      <div class="stat"><b id="termTotal">0</b><span>이 학기 예상 마일리지</span></div>
+      <div class="stat"><b id="certPoints">0 / 36</b><span>참인재 인증 마일리지 (전체 학기)</span>
+        <progress id="certPointsBar" max="36" value="0" aria-label="참인재 인증 마일리지"></progress></div>
+      <div class="stat"><b id="certCount">0 / 12</b><span>참인재 인증 프로그램 수 (전체 학기)</span>
+        <progress id="certCountBar" max="12" value="0" aria-label="참인재 인증 프로그램 수"></progress></div>
+    </div>
+    <div class="chips" id="byComp" aria-label="이 학기 핵심역량별 마일리지"></div>
+    <p class="hint">마일리지는 프로그램이 <strong>끝난 날</strong> 기준이에요 (1학기: 1~6월, 2학기: 7~12월 종료).
+      장학금 점수는 마일리지 + 가산점 + 결과보고서(최대 30점)이고, 최근 두 학기는 약 51점부터 장학금을 받았어요.</p>
+  </section>
+
+  <h2 id="list-title">프로그램 <span id="count"></span></h2>
+  <div class="filters">
+    <label>시기 <select id="when">
+      <option value="term">이번 학기</option>
+      <option value="month">이번 달</option>
+      <option value="all">전체</option>
+    </select></label>
+    <label>핵심역량 <select id="comp"><option value="">전체</option></select></label>
+    <label>부서 <select id="dept"><option value="">전체</option></select></label>
+    <label><input type="checkbox" id="teamOnly"> 팀 활동만</label>
+    <label><input type="checkbox" id="mineOnly"> 내가 체크한 것만</label>
+    <input type="search" id="q" placeholder="프로그램 이름 검색" aria-label="프로그램 이름 검색">
+  </div>
+  <ul id="list" aria-labelledby="list-title"></ul>
+
+  <footer>
+    <p>학교 공식 서비스가 아니에요. 자료는 「2026 인하 더 배움(비교과) 프로그램 가이드북」(교육기획팀)을 옮긴 것이고, 가이드북은 연간 계획이라 실제 일정과 마일리지는 달라질 수 있어요.
+      확정 마일리지는 인하포털 → 학사행정 → 비교과과정에서 확인하세요 (종료 후 3주 안에 입력돼요).</p>
+    <p>체크한 내용은 이 브라우저에만 저장돼요.</p>
+  </footer>
+</main>
+<script src="data.js"></script>
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
