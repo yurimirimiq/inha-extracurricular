@@ -184,6 +184,9 @@ button.primary { background: var(--inha); color: #fff; }
 .fields button { background: #fff; }
 .fields button.primary { background: var(--inha); }
 .scroll { overflow-x: auto; }
+.my td { white-space: normal; font-weight: 400; min-width: 0; }
+.my td:first-child { font-weight: 700; }
+.my td:last-child { text-align: right; white-space: nowrap; }
 table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
 th { color: var(--sub); font-weight: 500; font-size: .875rem; }
 th, td { text-align: left; padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }

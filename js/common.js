@@ -12,7 +12,7 @@ if (!session && !new URLSearchParams(location.search).has('demo')) location.repl
 $('who').textContent = session && session !== 'guest' ? `${session} 님` : '';
 $('logout').hidden = !session || session === 'guest';
 $('logout').addEventListener('click', () => {
-  try { localStorage.removeItem('inha-session'); localStorage.removeItem('inha-profile'); } catch { /* 위 설명 */ }
+  try { localStorage.removeItem('inha-session'); } catch { /* 위 설명 */ }
   location.href = 'login.html';
 });
 
@@ -31,8 +31,11 @@ let applications = {};
 try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ }
 const saveApplications = () => { try { localStorage.setItem(APPLY_KEY, JSON.stringify(applications)); } catch { /* 위와 같음 */ } };
 const me = isStudentId(demoId) ? demoId : session || 'guest';
-let profile = {};
-try { profile = JSON.parse(localStorage.getItem('inha-profile')) || {}; } catch { /* 위와 같음 */ }
+// 이름·학과: 마이페이지에서 적음. { 학번: { name, dept } } 로 저장해서 로그아웃해도 남음.
+const PROFILES_KEY = 'inha-profiles-v1';
+let profiles = {};
+try { profiles = JSON.parse(localStorage.getItem(PROFILES_KEY)) || {}; } catch { /* 위와 같음 */ }
+const profile = profiles[me] || {};
 // 내 마일리지 = 교직원이 부여한 점수
 const effective = () => grantedFor(applications, me);
 
