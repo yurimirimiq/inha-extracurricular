@@ -58,7 +58,7 @@ function render() {
   $('empty').hidden = rows.length > 0;
 }
 
-// 신청자 선발: 학생 화면(app.js)이 저장한 신청을 읽어서 상태만 바꿈
+// 신청자 선발: 학생 화면(programs.js)이 저장한 신청을 읽어서 상태만 바꿈
 const APPLY_KEY = 'inha-apply-demo-v1';
 let applications = {};
 try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ }

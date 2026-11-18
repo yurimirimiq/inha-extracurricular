@@ -4,7 +4,7 @@ const ICONS = { 자율책임: 'compass', 의사소통: 'speech', 창의사고: '
 for (const c of COMPS) {
   const label = el('label', 'shortcut');
   const icon = el('span', 'icon');
-  icon.append(Object.assign(document.createElement('img'), { src: `icons/${ICONS[c]}.png`, alt: '' }));
+  icon.append(Object.assign(document.createElement('img'), { src: `assets/icons/${ICONS[c]}.png`, alt: '' }));
   label.dataset.comp = c;
   label.append(Object.assign(document.createElement('input'), { type: 'radio', name: 'comp', value: c }), icon, c);
   $('teamShortcut').before(label);

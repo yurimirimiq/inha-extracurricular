@@ -1,4 +1,4 @@
-// 실행: node test.js
+// 실행: node js/test.js
 const assert = require('node:assert');
 const { PROGRAMS, DEPTS, COMPS } = require('./data.js');
 const { mileageTerm, termMonths, runsIn, summarize, parseStudentIds, confirmedFor, mergeRecords, authorLabel } = require('./logic.js');
