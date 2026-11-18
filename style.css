@@ -3,7 +3,8 @@
   --sub: #6b6b6b;
   --tile: #f4f4f4;
   --line: #e2e2e2;
-  --inha: #005bac;
+  --inha: #005bac; /* 인하대 상징색: 짙은 청색(바다) */
+  --sky: #00afec;  /* 인하대 상징색: 하늘색 */
   --warn: #ffe45c;
   --error: #c4161c;
 }
@@ -52,6 +53,30 @@ progress::-moz-progress-bar { background: #fff; border-radius: 999px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 12px 0 0; padding: 0; list-style: none; font-size: .875rem; }
 .dot::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); margin-right: 6px; }
 .legend .dot::before { box-shadow: 0 0 0 2px #fff; }
+
+/* 로그인 화면 */
+.account { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: .9375rem; }
+.account button { padding: 6px 14px; font-size: .875rem; }
+.login { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+.login-art { background: var(--inha); color: #fff; padding: 56px 48px 0; display: flex; flex-direction: column; overflow: hidden; }
+.login-art h1 { font-size: 3rem; }
+.login-art p { margin: 16px 0 0; font-size: 1.125rem; opacity: .9; }
+.login-art svg { margin-top: auto; width: min(100%, 420px); align-self: center; }
+.login-form { max-width: none; margin: 0; padding: 48px; display: grid; place-items: center; }
+.login-form form { width: min(100%, 360px); display: grid; gap: 16px; }
+.login-form h2 { margin: 0 0 8px; font-size: 1.75rem; }
+.login-form label { font-size: .875rem; font-weight: 600; }
+.login-form input { display: block; width: 100%; margin-top: 6px; font: inherit; background: var(--tile); border: 0; border-radius: 12px; padding: 13px 14px; }
+.login-form button.primary { background: var(--inha); padding: 14px; font-size: 1rem; }
+.login-form .notice, .login-form .hint { margin: 0; font-size: .875rem; }
+@media (max-width: 720px) {
+  .login { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .login-art { padding: 32px 24px 0; }
+  .login-art h1 { font-size: 2rem; }
+  .login-art p { font-size: 1rem; }
+  .login-art svg { width: 200px; margin-top: 12px; }
+  .login-form { padding: 32px 24px 48px; place-items: start center; }
+}
 
 /* 필터 */
 .filters { display: grid; gap: 12px; margin-bottom: 24px; }

@@ -5,6 +5,18 @@ const KEY = 'inha-mileage-v1';
 const now = new Date();
 const month = now.getMonth() + 1;
 
+// 로그인 안 했으면 로그인 화면으로. 교직원 시연 링크(?demo=)는 로그인 없이 봄.
+// 저장소를 못 쓰는 브라우저는 로그인 상태를 기억할 수 없어서 그냥 통과시킴(안 그러면 무한 반복).
+let session = 'guest';
+try { session = localStorage.getItem('inha-session'); } catch { /* 위 설명 */ }
+if (!session && !new URLSearchParams(location.search).has('demo')) location.replace('login.html');
+$('who').textContent = session && session !== 'guest' ? `${session} 님` : '';
+$('logout').hidden = !session || session === 'guest';
+$('logout').addEventListener('click', () => {
+  try { localStorage.removeItem('inha-session'); } catch { /* 위 설명 */ }
+  location.href = 'login.html';
+});
+
 // shortcut: 기록은 이 브라우저에만 저장됨. 기기 간 공유가 필요해지면 로그인 + 서버로 바꿀 것.
 let records = {};
 try { records = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { /* 저장소를 못 쓰면 저장 없이 동작 */ }

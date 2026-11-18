@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>로그인 · 인하 비교과 마일리지</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="login">
+  <section class="login-art">
+    <h1>인하 비교과<br>마일리지</h1>
+    <p>이번 학기에 열리는 프로그램과<br>내 마일리지를 한 화면에서.</p>
+    <!-- 직접 그린 임시 그림. 학교 공식 캐릭터(인덕이·안뇽이)는 사용 허락을 받은 뒤 이 자리에 넣을 것. -->
+    <svg viewBox="0 0 320 220" role="img" aria-label="인경호에 떠 있는 오리 그림">
+      <ellipse cx="160" cy="176" rx="150" ry="40" fill="#00afec"/>
+      <ellipse cx="160" cy="176" rx="104" ry="24" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/>
+      <ellipse cx="160" cy="176" rx="66" ry="13" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="3"/>
+      <path d="M92 140c0-30 28-46 62-46 20 0 36 6 50 6 14 0 22-10 30-10-2 34-28 72-80 72-36 0-62-6-62-22z" fill="#fff"/>
+      <path d="M150 118c14-10 36-10 50 2-12 14-36 16-50-2z" fill="#e6eef6"/>
+      <circle cx="104" cy="88" r="34" fill="#fff"/>
+      <path d="M76 86c-18-2-30 4-34 12 10 8 26 8 38 2z" fill="#ffb300"/>
+      <circle cx="96" cy="80" r="5" fill="#000"/>
+      <circle cx="98" cy="78" r="1.6" fill="#fff"/>
+    </svg>
+  </section>
+
+  <main class="login-form">
+    <form id="loginForm">
+      <h2>로그인</h2>
+      <label>학번
+        <input id="sid" inputmode="numeric" autocomplete="username" required autofocus></label>
+      <label>비밀번호
+        <input id="pw" type="password" autocomplete="off" required></label>
+      <button type="submit" class="primary">로그인</button>
+      <p class="notice"><strong>지금은 시험 버전이에요.</strong> 아무 값이나 넣어도 들어가지고, 비밀번호는 어디에도 저장하지 않아요.
+        인하포털 비밀번호는 넣지 마세요.</p>
+      <p class="hint">인하대학교 공식 서비스가 아니에요. 학생이 만든 비교과 안내 사이트예요.</p>
+    </form>
+  </main>
+
+<script>
+  // shortcut: 진짜 로그인이 아님. 학번만 이 브라우저에 기억하고 비밀번호는 버림. 서버(Supabase)나 학교 로그인으로 바꿀 때 이 부분을 교체.
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    try { localStorage.setItem('inha-session', document.getElementById('sid').value.trim()); } catch { /* 저장소를 못 써도 들어가게 함 */ }
+    location.href = 'index.html';
+  });
+</script>
+</body>
+</html>
