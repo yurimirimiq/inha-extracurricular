@@ -43,6 +43,7 @@ input:not([type=checkbox], [type=radio]):focus-visible, textarea:focus-visible, 
 /* 위쪽 줄 */
 .nav, .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; padding: 8px 0 28px; }
 .top { padding-bottom: 4px; }
+.top h2 { font-size: 1.75rem; margin: 0; }
 .nav { position: sticky; top: 0; z-index: 5; padding: 12px 20px; margin: -12px -20px 16px; background: rgb(255 255 255 / .82); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); }
 .brand { font-size: 2rem; color: var(--inha); display: flex; align-items: center; gap: 8px; }
 .brand a { display: flex; align-items: center; gap: 8px; text-decoration: none; }

@@ -5,14 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>팀원 구하기 · 인하 비교과 마일리지</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css?v=29">
+<link rel="stylesheet" href="css/style.css?v=30">
 </head>
 <body>
 <main>
-  <header class="top">
-    <h1 id="name"></h1>
-    <a href="programs.html">프로그램 목록으로</a>
+  <header class="nav">
+    <h1 class="brand"><a href="index.html" data-keep><span>INHA</span>비교과</a></h1>
+    <nav class="menu" aria-label="주요 메뉴">
+      <a href="index.html" data-keep>홈</a>
+      <a href="programs.html" data-keep aria-current="page">프로그램 신청</a>
+      <a href="mypage.html" data-keep>마이페이지</a>
+    </nav>
+    <div class="account">
+      <span id="who"></span>
+      <button type="button" id="logout">로그아웃</button>
+      <a href="admin.html">교직원 화면</a>
+    </div>
   </header>
+
+  <p id="demoBanner" class="notice" hidden><strong>시연 모드예요.</strong> 가짜 학번 <span id="demoId"></span> 학생의 화면이에요. <a href="admin.html">교직원 화면으로</a></p>
+
+  <div class="top">
+    <h2 id="name"></h2>
+    <a href="programs.html?show=team" data-keep>← 팀 활동 목록으로</a>
+  </div>
   <p class="sub" id="summary"></p>
   <p class="notice" id="localNotice"><strong>지금은 시험 버전이에요.</strong> 쓴 글은 이 브라우저에만 저장돼서 다른 사람에게는 아직 보이지 않아요.</p>
 
@@ -32,11 +48,12 @@
   <ul id="posts" class="posts" aria-labelledby="posts-title"></ul>
   <p id="empty" class="empty">아직 글이 없어요. 첫 글을 써보세요.</p>
 </main>
-<script src="js/data.js?v=29"></script>
-<script src="js/logic.js?v=29"></script>
-<script src="js/demo.js?v=29"></script>
-<script src="js/config.js?v=29"></script>
-<script src="js/board.js?v=29"></script>
-<script src="js/team.js?v=29"></script>
+<script src="js/data.js?v=30"></script>
+<script src="js/logic.js?v=30"></script>
+<script src="js/demo.js?v=30"></script>
+<script src="js/config.js?v=30"></script>
+<script src="js/board.js?v=30"></script>
+<script src="js/common.js?v=30"></script>
+<script src="js/team.js?v=30"></script>
 </body>
 </html>

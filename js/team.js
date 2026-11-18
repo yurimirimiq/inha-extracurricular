@@ -1,17 +1,17 @@
-const $ = (id) => document.getElementById(id);
-const el = (tag, className = '', text = '') => Object.assign(document.createElement(tag), { className, textContent: text });
-
-let session = 'guest';
-try { session = localStorage.getItem('inha-session'); } catch { /* 저장소를 못 쓰면 로그인 없이 통과 */ }
-if (!session) location.replace('login.html');
-
+// 팀원 구하기 화면 (common.js 다음에 불러옴). 로그인 확인과 위쪽 줄, 글 불러오기(boardPosts)는 common.js가 함.
 const program = PROGRAMS.find((p) => p.name === new URLSearchParams(location.search).get('p') && p.team);
 if (!program) location.replace('programs.html');
 
 // 글·댓글은 board.js가 저장함 (서버가 연결돼 있으면 서버, 아니면 이 브라우저)
 let posts = [];
 const fail = () => alert('게시판에 연결하지 못했어요. 잠시 후 다시 해주세요.');
-const reload = () => board.list(session).then((all) => { posts = all.filter((p) => p.program === program.name); render(); }).catch(fail);
+const reload = loadBoard;
+// common.js가 글을 받아오거나 다른 탭에서 바뀌면 부름
+function refresh() {
+  if (!program) return;
+  posts = boardPosts.filter((p) => p.program === program.name);
+  render();
+}
 const button = (text, onClick) => {
   const b = Object.assign(el('button', '', text), { type: 'button' });
   b.addEventListener('click', onClick);
@@ -67,7 +67,7 @@ function commentsOf(post) {
     e.preventDefault();
     const body = input.value.trim();
     if (!body) return;
-    board.addComment(session, post.id, body).then(reload).catch(fail);
+    board.addComment(me, post.id, body).then(reload).catch(fail);
   });
   box.append(ul, form);
   return box;
@@ -83,9 +83,6 @@ if (program) {
     e.preventDefault();
     const fields = { title: $('title').value.trim(), body: $('body').value.trim(), contact: $('contact').value.trim() };
     if (!fields.title || !fields.body || !fields.contact) return;
-    board.addPost(session, program.name, fields).then(() => { e.target.reset(); return reload(); }).catch(fail);
+    board.addPost(me, program.name, fields).then(() => { e.target.reset(); return reload(); }).catch(fail);
   });
-  // 다른 탭에서 글·댓글이 바뀌면 다시 읽음
-  window.addEventListener('storage', reload);
-  reload();
 }
