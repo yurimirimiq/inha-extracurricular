@@ -1,7 +1,6 @@
 const $ = (id) => document.getElementById(id);
 const el = (tag, className = '', text = '') => Object.assign(document.createElement(tag), { className, textContent: text });
 const picked = (name) => document.querySelector(`[name=${name}]:checked`).value;
-const KEY = 'inha-mileage-v1';
 const now = new Date();
 const month = now.getMonth() + 1;
 
@@ -13,42 +12,41 @@ if (!session && !new URLSearchParams(location.search).has('demo')) location.repl
 $('who').textContent = session && session !== 'guest' ? `${session} 님` : '';
 $('logout').hidden = !session || session === 'guest';
 $('logout').addEventListener('click', () => {
-  try { localStorage.removeItem('inha-session'); } catch { /* 위 설명 */ }
+  try { localStorage.removeItem('inha-session'); localStorage.removeItem('inha-profile'); } catch { /* 위 설명 */ }
   location.href = 'login.html';
 });
 
-// shortcut: 기록은 이 브라우저에만 저장됨. 기기 간 공유가 필요해지면 로그인 + 서버로 바꿀 것.
-let records = {};
-try { records = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { /* 저장소를 못 쓰면 저장 없이 동작 */ }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(records)); } catch { /* 위와 같음 */ } };
-
-// 시연 모드: admin.html에서 확정한 내역을 ?demo=학번 으로 열어 학생 입장에서 봄
+// 시연 모드: admin.html의 "학생 화면 보기"가 ?demo=학번 으로 열어 그 학생 입장에서 봄
 const demoId = new URLSearchParams(location.search).get('demo') || '';
-let confirmed = {};
 if (isStudentId(demoId)) {
-  try { confirmed = confirmedFor(JSON.parse(localStorage.getItem('inha-confirm-demo-v1')) || {}, demoId); } catch { /* 위와 같음 */ }
   $('demoBanner').hidden = false;
   $('demoId').textContent = demoId;
 }
-const effective = () => mergeRecords(records, confirmed);
 
-// 신청 (시험 버전): { 프로그램이름: { 신청자: { status, at } } }. 교직원 화면(admin.js)이 같은 곳을 읽고 선발함.
+// 신청 (시험 버전): { 프로그램이름: { 신청자: { status, at, name, dept, points, term } } }.
+// 교직원 화면(admin.js)이 같은 곳을 읽어서 선발하고 점수를 부여함. 학생은 신청만 하고 점수는 못 바꿈.
 // shortcut: 이 브라우저에만 저장돼서 학교에 실제로 접수되지 않음. 서버 연결 + 학교 협의 전까지는 흐름 시연용.
 const APPLY_KEY = 'inha-apply-demo-v1';
 let applications = {};
 try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ }
 const saveApplications = () => { try { localStorage.setItem(APPLY_KEY, JSON.stringify(applications)); } catch { /* 위와 같음 */ } };
 const me = isStudentId(demoId) ? demoId : session || 'guest';
+let profile = {};
+try { profile = JSON.parse(localStorage.getItem('inha-profile')) || {}; } catch { /* 위와 같음 */ }
+// 내 마일리지 = 교직원이 부여한 점수
+const effective = () => grantedFor(applications, me);
 
 // 팀 프로그램 카드에 글 개수를 보여주려고 읽음 (쓰기는 team.js)
 let teamPosts = {};
 try { teamPosts = JSON.parse(localStorage.getItem('inha-team-posts-v1')) || {}; } catch { /* 위와 같음 */ }
 
 const option = (value, text = value) => Object.assign(document.createElement('option'), { value, textContent: text });
-for (let y = now.getFullYear(); y >= now.getFullYear() - 4; y--) {
-  for (const t of [2, 1]) $('term').append(option(`${y}-${t}`, `${y}년 ${t}학기`));
+if ($('term')) {
+  for (let y = now.getFullYear(); y >= now.getFullYear() - 4; y--) {
+    for (const t of [2, 1]) $('term').append(option(`${y}-${t}`, `${y}년 ${t}학기`));
+  }
+  $('term').value = mileageTerm(now);
 }
-$('term').value = mileageTerm(now);
 
 // 시연 모드에서는 화면을 옮겨 다녀도 같은 학생으로 보이게 링크에 학번을 붙임
 if (isStudentId(demoId)) {

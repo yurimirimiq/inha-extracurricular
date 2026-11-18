@@ -24,9 +24,6 @@ const monthsText = (p) => {
 };
 
 function renderList() {
-  const term = $('term').value;
-  const checked = effective()[term] || {};
-  const sure = confirmed[term] || {};
   const months = { term: termMonths(month), month: [month], all: null }[picked('when')];
   const comp = picked('comp');
   const q = $('q').value.trim().toLowerCase();
@@ -35,7 +32,6 @@ function renderList() {
     (!comp || p.comp === comp) &&
     (!$('dept').value || p.dept === $('dept').value) &&
     (!$('teamOnly').checked || p.team) &&
-    (!$('mineOnly').checked || p.name in checked) &&
     (!$('appliedOnly').checked || applications[p.name]?.[me]) &&
     (!q || p.name.toLowerCase().includes(q)));
 
@@ -44,9 +40,6 @@ function renderList() {
   $('list').replaceChildren(...shown.map((p) => {
     const li = el('li', 'card');
     li.dataset.comp = p.comp;
-    const done = p.name in checked;
-    // 교직원이 확정한 건 학생이 못 바꿈
-    const locked = p.name in sure;
 
     const top = el('div', 'card-top');
     top.append(el('span', '', `${p.comp} · ${monthsText(p)}`), el('span', 'pts', `${p.points}점`));
@@ -60,60 +53,36 @@ function renderList() {
     const more = el('details');
     more.append(el('summary', '', '신청 방법 보기'), info);
 
-    const apply = el('div');
+    // 학생은 신청만 함. 선발과 점수는 교직원 화면에서.
+    const mine = el('div', 'mine');
     const application = applications[p.name]?.[me];
     if (!application) {
       const button = el('button', 'primary', '신청하기');
       button.type = 'button';
       button.addEventListener('click', () => {
-        (applications[p.name] ??= {})[me] = { status: 'applied', at: Date.now() };
+        (applications[p.name] ??= {})[me] = { status: 'applied', at: Date.now(), name: profile.name || '', dept: profile.dept || '' };
         saveApplications(); renderList();
       });
-      apply.append(button);
+      mine.append(button);
+    } else if (application.points > 0) {
+      mine.append(el('span', 'status selected', `이수 · ${application.points}점 받음`));
     } else {
-      apply.append(el('span', `status ${application.status}`, application.status === 'applied' ? '선발 대기' : APPLY_STATUS[application.status]));
+      mine.append(el('span', `status ${application.status}`, application.status === 'applied' ? '신청 완료 · 선발 대기' : APPLY_STATUS[application.status]));
       if (application.status === 'applied') {
-        const cancel = el('button', '', '취소');
-        cancel.setAttribute('aria-label', `${p.name} 신청 취소`);
+        const cancel = el('button', '', '신청 취소');
         cancel.type = 'button';
         cancel.addEventListener('click', () => {
           delete applications[p.name][me];
           saveApplications(); renderList();
         });
-        apply.append(cancel);
+        mine.append(cancel);
       }
     }
-
-    const mine = el('div', 'mine');
-    const check = Object.assign(document.createElement('input'), { type: 'checkbox', checked: done, disabled: locked });
-    const toggle = el('label', 'toggle');
-    toggle.append(check, locked ? `확정 ${sure[p.name]}점` : done ? '참여 ✓' : '참여');
-    mine.append(toggle);
     if (p.team) {
       const n = (teamPosts[p.name] || []).length;
       mine.append(Object.assign(el('a', 'pill-link', n ? `팀원 ${n}` : '팀원 구하기'), { href: `team.html?p=${encodeURIComponent(p.name)}` }));
     }
-    check.addEventListener('change', () => {
-      records[term] ??= {};
-      if (check.checked) records[term][p.name] = p.points; else delete records[term][p.name];
-      save(); renderList();
-    });
-    if (done && !locked) {
-      // 회당·시간별로 점수가 달라지는 프로그램이 있어서 직접 고칠 수 있게 함
-      const points = Object.assign(document.createElement('input'), { type: 'number', min: 1, max: 30, value: checked[p.name] });
-      points.setAttribute('aria-label', `${p.name} 받은 마일리지`);
-      points.addEventListener('change', () => {
-        records[term][p.name] = Math.min(30, Math.max(1, Math.round(Number(points.value)) || p.points));
-        points.value = records[term][p.name];
-        save();
-      });
-      const pointsLabel = el('label');
-      pointsLabel.append(points, '점');
-      mine.append(pointsLabel);
-    }
 
-    // 칸을 작게 쓰려고 신청과 참여 단추를 한 줄에 모음
-    mine.prepend(...apply.childNodes);
     li.append(top, el('h3', '', p.name), more, mine);
     return li;
   }));
@@ -122,7 +91,6 @@ function renderList() {
 document.querySelector('.filters').addEventListener('change', renderList);
 $('shortcuts').addEventListener('change', renderList);
 $('q').addEventListener('input', renderList);
-$('term').addEventListener('change', renderList);
 
 // 홈의 타일에서 넘어오면 해당 필터를 미리 켬 (programs.html?show=applied / team)
 const show = { applied: 'appliedOnly', team: 'teamOnly' }[new URLSearchParams(location.search).get('show')];

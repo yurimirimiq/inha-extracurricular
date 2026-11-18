@@ -179,8 +179,12 @@ button.primary { background: var(--inha); color: #fff; }
 table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
 th { color: var(--sub); font-weight: 500; font-size: .875rem; }
 th, td { text-align: left; padding: 12px 12px 12px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
-td:nth-child(2) { white-space: normal; min-width: 10em; font-weight: 600; }
-td button { padding: 5px 12px; font-size: .875rem; margin-left: 8px; }
+td:nth-child(3) { font-weight: 700; }
+td button { padding: 5px 12px; font-size: .875rem; margin-right: 6px; }
+td input[type=number] { width: 3.6em; padding: 5px 8px; border-radius: 8px; background: var(--tile); margin-right: 2px; }
+td input[type=number] + button, td a { margin-left: 8px; }
+td.muted { color: var(--sub); }
+td:nth-child(4) { white-space: normal; min-width: 11em; }
 
 footer { border-top: 1px solid var(--ink); color: var(--sub); font-size: .8125rem; }
 footer div { max-width: 1000px; margin: 0 auto; padding: 28px 20px 48px; }

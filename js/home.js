@@ -2,10 +2,8 @@
 function renderSummary() {
   const term = $('term').value;
   const s = summarize(effective(), PROGRAMS, term);
-  const sure = Object.values(confirmed[term] || {}).reduce((a, b) => a + b, 0);
   $('termTotal').textContent = s.termTotal;
   $('heroCount').textContent = Object.keys(effective()[term] || {}).length;
-  $('heroSure').textContent = sure;
   $('certPoints').textContent = `${s.certPoints} / 36`;
   $('certPointsBar').value = Math.min(s.certPoints, 36);
   $('certCount').textContent = `${s.certCount} / 12`;
@@ -19,7 +17,7 @@ function renderSummary() {
   }));
   $('mixLegend').replaceChildren(...(used.length
     ? used.map((c) => { const li = el('li', 'dot', `${c} ${s.byComp[c]}점`); li.dataset.comp = c; return li; })
-    : [el('li', '', '참여한 프로그램을 체크하면 여기에 나눠서 보여줘요.')]));
+    : [el('li', '', '교직원이 점수를 부여하면 여기에 나눠서 보여줘요.')]));
 }
 
 // 위쪽 타일: 내 신청 건수와 팀원 구하는 글 수

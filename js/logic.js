@@ -37,32 +37,17 @@ const isStudentId = (text) => /^\d{8}$/.test(text);
 // 게시판 글쓴이 표시: 학번 전체 대신 입학 연도만 (12221234 → "22학번"). 인하대 학번이 12 + 입학 연도 두 자리로 시작한다고 가정함.
 const authorLabel = (studentId) => (isStudentId(studentId || '') ? `${studentId.slice(2, 4)}학번` : '익명');
 
-// 교직원이 붙여넣은 명단(줄바꿈·쉼표·공백 구분)을 학번 목록으로. 중복은 한 번만.
-function parseStudentIds(text) {
-  const tokens = [...new Set(text.split(/[\s,;]+/).filter(Boolean))];
-  return { valid: tokens.filter(isStudentId), invalid: tokens.filter((t) => !isStudentId(t)) };
-}
-
-// confirmations: { 학기: { 프로그램이름: { 학번: 점수 } } } → 그 학생 것만 { 학기: { 프로그램이름: 점수 } }
-function confirmedFor(confirmations, studentId) {
+// 교직원이 신청에 부여한 점수만 모음.
+// applications: { 프로그램이름: { 신청자: { status, points, term } } } → 그 학생 것만 { 학기: { 프로그램이름: 점수 } }
+function grantedFor(applications, studentId) {
   const out = {};
-  for (const [term, programs] of Object.entries(confirmations)) {
-    for (const [name, students] of Object.entries(programs)) {
-      if (studentId in students) (out[term] ??= {})[name] = students[studentId];
-    }
-  }
-  return out;
-}
-
-// 내가 체크한 것 + 확정된 것. 같은 프로그램이면 확정 점수가 이김.
-function mergeRecords(mine, confirmed) {
-  const out = {};
-  for (const term of new Set([...Object.keys(mine), ...Object.keys(confirmed)])) {
-    out[term] = { ...mine[term], ...confirmed[term] };
+  for (const [name, applicants] of Object.entries(applications)) {
+    const a = applicants[studentId];
+    if (a && a.points > 0 && a.term) (out[a.term] ??= {})[name] = a.points;
   }
   return out;
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { mileageTerm, termMonths, runsIn, summarize, APPLY_STATUS, isStudentId, authorLabel, parseStudentIds, confirmedFor, mergeRecords };
+  module.exports = { mileageTerm, termMonths, runsIn, summarize, APPLY_STATUS, isStudentId, authorLabel, grantedFor };
 }
