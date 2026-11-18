@@ -3,10 +3,16 @@ const KEY = 'inha-mileage-v1';
 const now = new Date();
 const month = now.getMonth() + 1;
 
-// shortcut: 기록은 이 브라우저에만 저장됨. 기기 간 공유가 필요해지면 로그인 + 서버로 바꿀 것.
+const db = SUPABASE_URL ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+let user = null;
+
 let records = {};
 try { records = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { /* 저장소를 못 쓰면 저장 없이 동작 */ }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(records)); } catch { /* 위와 같음 */ } };
+const saveLocal = () => { try { localStorage.setItem(KEY, JSON.stringify(records)); } catch { /* 위와 같음 */ } };
+const save = () => {
+  saveLocal();
+  if (user) db.from('records').upsert({ user_id: user.id, data: records }).then(({ error }) => { $('syncError').hidden = !error; });
+};
 
 const option = (value, text = value) => Object.assign(document.createElement('option'), { value, textContent: text });
 
@@ -108,3 +114,65 @@ $('q').addEventListener('input', renderList);
 $('term').addEventListener('change', () => { renderSummary(); renderList(); });
 renderSummary();
 renderList();
+
+// --- 로그인 ---
+let signingUp = false;
+const setMode = (signup) => {
+  signingUp = signup;
+  $('authTitle').textContent = $('authSubmit').textContent = signup ? '가입하기' : '로그인';
+  $('authSwitch').textContent = signup ? '이미 가입했어요 (로그인)' : '처음이에요 (가입하기)';
+  $('signupNote').hidden = !signup;
+  $('pw').autocomplete = signup ? 'new-password' : 'current-password';
+  $('authError').textContent = '';
+};
+const AUTH_ERRORS = {
+  invalid_credentials: '학번 또는 비밀번호가 맞지 않아요.',
+  user_already_exists: '이미 가입된 학번이에요. 로그인해 주세요.',
+  weak_password: '비밀번호가 너무 쉬워요. 더 길게 만들어 주세요.',
+  over_request_rate_limit: '시도가 너무 많아요. 잠시 뒤에 다시 해주세요.',
+};
+
+$('loginOpen').addEventListener('click', () => { setMode(false); $('auth').showModal(); });
+$('authClose').addEventListener('click', () => $('auth').close());
+$('authSwitch').addEventListener('click', () => setMode(!signingUp));
+$('authForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = loginEmail($('sid').value.trim());
+  if (!email) { $('authError').textContent = '학번은 숫자 8자리로 입력해 주세요.'; return; }
+  if (!db) { $('authError').textContent = '아직 서버가 연결되지 않았어요. (config.js 설정 필요)'; return; }
+  $('authSubmit').disabled = true;
+  const credentials = { email, password: $('pw').value };
+  const { data, error } = signingUp ? await db.auth.signUp(credentials) : await db.auth.signInWithPassword(credentials);
+  $('authSubmit').disabled = false;
+  if (error) { $('authError').textContent = AUTH_ERRORS[error.code] || `잘 안 됐어요: ${error.message}`; return; }
+  // 메일 확인 설정이 켜져 있으면 가입해도 로그인이 안 됨
+  if (!data.session) { $('authError').textContent = '가입은 됐지만 로그인이 안 됐어요. Supabase의 Confirm email 설정을 꺼주세요.'; return; }
+  $('pw').value = '';
+  $('auth').close();
+});
+$('logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  // 같이 쓰는 컴퓨터에 기록이 남지 않게 비움
+  records = {};
+  saveLocal();
+  renderSummary(); renderList();
+});
+
+async function onUser(u) {
+  user = u;
+  $('who').textContent = u ? `${u.email.split('@')[0]} 님` : '';
+  $('loginOpen').hidden = !!u;
+  $('logout').hidden = !u;
+  if (!u) return;
+  const { data, error } = await db.from('records').select('data').maybeSingle();
+  $('syncError').hidden = !error;
+  if (error) return;
+  // 계정에 기록이 있으면 그걸 쓰고, 처음 로그인이면 이 브라우저 기록을 계정으로 올림
+  if (data) { records = data.data; saveLocal(); } else save();
+  renderSummary(); renderList();
+}
+// 콜백 안에서 바로 Supabase를 부르면 멈출 수 있어서 한 박자 늦춤 (Supabase 안내)
+db?.auth.onAuthStateChange((_event, session) => {
+  const u = session?.user ?? null;
+  if (u?.id !== user?.id) setTimeout(() => onUser(u));
+});

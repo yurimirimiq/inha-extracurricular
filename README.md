@@ -12,3 +12,11 @@
 - `logic.js` — 마일리지 계산
 - `app.js`, `index.html` — 화면
 - `test.js` — 검사. `node test.js`로 실행.
+- `config.js` — 로그인 서버(Supabase) 주소와 공개 키. 비어 있으면 로그인 없이 동작.
+- `supabase.sql` — Supabase에 한 번 실행하는 표 설정
+
+## 로그인 켜는 법
+
+1. Supabase에서 프로젝트를 만들고 SQL Editor에서 `supabase.sql`을 실행.
+2. Authentication → Sign In / Providers → Email에서 **Confirm email을 끔** (학번을 메일 주소 모양으로 바꿔 쓰기 때문에 실제 메일을 보내면 안 됨).
+3. Project Settings → API의 Project URL과 anon public 키를 `config.js`에 넣음.

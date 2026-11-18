@@ -29,4 +29,8 @@ function summarize(records, programs, term) {
   return { termTotal, byComp, certPoints, certCount };
 }
 
-if (typeof module !== 'undefined') module.exports = { mileageTerm, termMonths, runsIn, summarize };
+// Supabase 로그인은 이메일이 필요해서 학번을 이메일 모양으로 바꿔 씀. 학번이 8자리 숫자가 아니면 null.
+// shortcut: 실제 메일은 보내지 않음(본인 확인 없음). 학교 인증을 붙일 때 이 주소 형식부터 확인할 것.
+const loginEmail = (studentId) => (/^\d{8}$/.test(studentId) ? `${studentId}@inha.edu` : null);
+
+if (typeof module !== 'undefined') module.exports = { mileageTerm, termMonths, runsIn, summarize, loginEmail };

@@ -49,12 +49,50 @@
   .meta { color: var(--muted); font-size: .85rem; margin: 0; }
   .mine { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 8px; justify-content: space-between; }
   a { color: var(--brand); }
+  .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+  .account { display: flex; align-items: center; gap: 8px; font-size: .9rem; }
+  button { font: inherit; color: inherit; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+  button.primary { background: var(--brand); border-color: var(--brand); color: var(--bg); font-weight: 600; }
+  .error { color: #c62828; font-size: .9rem; margin: 8px 0 0; }
+  @media (prefers-color-scheme: dark) { .error { color: #ff8a80; } }
+  dialog { background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; padding: 20px; width: min(360px, calc(100vw - 32px)); }
+  dialog::backdrop { background: rgb(0 0 0 / .5); }
+  dialog h2 { margin: 0 0 12px; }
+  dialog label { display: block; margin-bottom: 12px; }
+  dialog label input { display: block; width: 100%; margin-top: 4px; font: inherit; color: inherit; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   footer { color: var(--muted); font-size: .8rem; margin-top: 32px; }
 </style>
 </head>
 <body>
 <main>
-  <h1>인하 비교과 마일리지</h1>
+  <header class="top">
+    <h1>인하 비교과 마일리지</h1>
+    <div class="account">
+      <span id="who"></span>
+      <button type="button" id="loginOpen">로그인</button>
+      <button type="button" id="logout" hidden>로그아웃</button>
+    </div>
+  </header>
+  <p id="syncError" class="error" role="alert" hidden>계정에 저장하지 못했어요. 인터넷 연결을 확인해 주세요.</p>
+
+  <dialog id="auth" aria-labelledby="authTitle">
+    <form id="authForm">
+      <h2 id="authTitle">로그인</h2>
+      <label>학번 (8자리)
+        <input id="sid" inputmode="numeric" pattern="\d{8}" maxlength="8" required autocomplete="username"></label>
+      <label>비밀번호 (8자 이상)
+        <input id="pw" type="password" minlength="8" required autocomplete="current-password"></label>
+      <p id="signupNote" class="hint" hidden>이 사이트 전용 비밀번호를 새로 만드세요. <strong>인하포털 비밀번호와 다르게</strong> 해주세요.
+        지금은 비밀번호 찾기가 없으니 잊지 않게 적어두세요.</p>
+      <p id="authError" class="error" role="alert"></p>
+      <div class="actions">
+        <button type="submit" id="authSubmit" class="primary">로그인</button>
+        <button type="button" id="authSwitch">처음이에요 (가입하기)</button>
+        <button type="button" id="authClose">닫기</button>
+      </div>
+    </form>
+  </dialog>
   <p class="sub">참여한 프로그램을 체크하면 예상 마일리지를 바로 볼 수 있어요. 공식 기록은 아니에요.</p>
 
   <section class="panel" aria-labelledby="mine-title">
@@ -91,9 +129,11 @@
   <footer>
     <p>학교 공식 서비스가 아니에요. 자료는 「2026 인하 더 배움(비교과) 프로그램 가이드북」(교육기획팀)을 옮긴 것이고, 가이드북은 연간 계획이라 실제 일정과 마일리지는 달라질 수 있어요.
       확정 마일리지는 인하포털 → 학사행정 → 비교과과정에서 확인하세요 (종료 후 3주 안에 입력돼요).</p>
-    <p>체크한 내용은 이 브라우저에만 저장돼요.</p>
+    <p>로그인하지 않으면 체크한 내용은 이 브라우저에만 저장돼요. 로그인하면 계정에 저장돼서 다른 기기에서도 보여요.</p>
   </footer>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
 <script src="data.js"></script>
 <script src="logic.js"></script>
 <script src="app.js"></script>

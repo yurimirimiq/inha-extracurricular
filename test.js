@@ -1,7 +1,7 @@
 // 실행: node test.js
 const assert = require('node:assert');
 const { PROGRAMS, DEPTS, COMPS } = require('./data.js');
-const { mileageTerm, termMonths, runsIn, summarize } = require('./logic.js');
+const { mileageTerm, termMonths, runsIn, summarize, loginEmail } =require('./logic.js');
 
 // 데이터 검사
 assert.equal(new Set(PROGRAMS.map((p) => p.name)).size, PROGRAMS.length, '프로그램 이름이 겹침');
@@ -37,5 +37,9 @@ assert.equal(s.termTotal, 7);
 assert.deepEqual(s.byComp, { 지식활용: 4, 의사소통: 3 });
 assert.equal(s.certPoints, 11);
 assert.equal(s.certCount, 3);
+
+// 학번 검사
+assert.equal(loginEmail('12201234'), '12201234@inha.edu');
+for (const bad of ['1220123', '122012345', '1220123a', '', ' 12201234', 'a@b.c']) assert.equal(loginEmail(bad), null);
 
 console.log(`통과 (프로그램 ${PROGRAMS.length}개)`);
