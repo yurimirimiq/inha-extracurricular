@@ -1,8 +1,12 @@
-# 인하 비교과 한눈에
+<p align="center">
+  <img src="assets/logo.svg" alt="INHA 비교과" width="420">
+</p>
 
-인하대 비교과(인하 더 배움) 프로그램을 한눈에 보고, 내 예상 마일리지를 바로 확인하는 웹사이트.
+<h3 align="center">인하대 비교과 프로그램을 한눈에 보고, 내 예상 마일리지를 바로 확인</h3>
 
-**바로 보기 → https://yurimirimiq.github.io/inha-extracurricular/**
+<p align="center">
+  <a href="https://yurimirimiq.github.io/inha-extracurricular/"><b>바로 보기 →</b></a>
+</p>
 
 > 학교 공식 서비스가 아닌 학생 프로젝트입니다.
 
