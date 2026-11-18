@@ -100,4 +100,5 @@ if (show) {
   $(show).checked = true;
   document.querySelector('[name=when][value=all]').checked = true;
 }
-renderList();
+const refresh = renderList;
+refresh();

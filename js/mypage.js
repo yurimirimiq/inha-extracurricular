@@ -99,6 +99,5 @@ function renderWriting() {
     }, '댓글 지우기')));
 }
 
-renderScores();
-renderApplications();
-renderWriting();
+function refresh() { renderScores(); renderApplications(); renderWriting(); }
+refresh();

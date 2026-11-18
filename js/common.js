@@ -28,7 +28,6 @@ if (isStudentId(demoId)) {
 // shortcut: 이 브라우저에만 저장돼서 학교에 실제로 접수되지 않음. 서버 연결 + 학교 협의 전까지는 흐름 시연용.
 const APPLY_KEY = 'inha-apply-demo-v1';
 let applications = {};
-try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ }
 const saveApplications = () => { try { localStorage.setItem(APPLY_KEY, JSON.stringify(applications)); } catch { /* 위와 같음 */ } };
 const me = isStudentId(demoId) ? demoId : session || 'guest';
 // 이름·학과: 마이페이지에서 적음. { 학번: { name, dept } } 로 저장해서 로그아웃해도 남음.
@@ -41,7 +40,16 @@ const effective = () => grantedFor(applications, me);
 
 // 팀 프로그램 카드에 글 개수를 보여주려고 읽음 (쓰기는 team.js)
 let teamPosts = {};
-try { teamPosts = JSON.parse(localStorage.getItem('inha-team-posts-v1')) || {}; } catch { /* 위와 같음 */ }
+const loadStore = () => {
+  try {
+    applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {};
+    teamPosts = JSON.parse(localStorage.getItem('inha-team-posts-v1')) || {};
+  } catch { /* 위와 같음 */ }
+};
+loadStore();
+// 다른 탭에서 저장하면 여기 것도 다시 읽고 다시 그림. 안 그러면 옛 내용으로 덮어써서 지운 글·신청이 되살아남.
+// refresh()는 화면별 파일(home.js, programs.js, mypage.js)에 있음.
+window.addEventListener('storage', () => { loadStore(); refresh(); });
 
 const option = (value, text = value) => Object.assign(document.createElement('option'), { value, textContent: text });
 if ($('term')) {

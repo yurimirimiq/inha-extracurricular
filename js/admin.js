@@ -4,7 +4,10 @@ const el = (tag, text = '') => Object.assign(document.createElement(tag), { text
 // 학생 화면(common.js)과 같은 곳을 읽고 씀: { 프로그램이름: { 학번: { status, at, name, dept, points, term } } }
 const APPLY_KEY = 'inha-apply-demo-v1';
 let applications = {};
-try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 저장소를 못 쓰면 저장 없이 동작 */ }
+const load = () => { try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 저장소를 못 쓰면 저장 없이 동작 */ } };
+load();
+// 다른 탭(학생 화면)에서 신청·취소하면 여기도 다시 읽음. 안 그러면 다음에 저장할 때 옛 내용으로 덮어씀.
+window.addEventListener('storage', () => { load(); render(); });
 const save = () => { try { localStorage.setItem(APPLY_KEY, JSON.stringify(applications)); } catch { /* 위와 같음 */ } };
 
 const term = mileageTerm(new Date());

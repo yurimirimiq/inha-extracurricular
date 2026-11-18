@@ -30,5 +30,5 @@ function renderSide() {
 }
 
 $('term').addEventListener('change', renderSummary);
-renderSummary();
-renderSide();
+function refresh() { renderSummary(); renderSide(); }
+refresh();

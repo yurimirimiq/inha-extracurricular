@@ -12,7 +12,10 @@ if (!program) location.replace('programs.html');
 
 // { 프로그램이름: [{ id, title, body, contact, author, at, comments: [{ id, body, author, at }] }] }
 let posts = {};
-try { posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || {}; } catch { /* 위와 같음 */ }
+const load = () => { try { posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || {}; } catch { /* 위와 같음 */ } };
+load();
+// 다른 탭(마이페이지 등)에서 글·댓글을 지우면 여기도 다시 읽음. 안 그러면 다음에 저장할 때 지운 글이 되살아남.
+window.addEventListener('storage', () => { load(); if (program) render(); });
 const save = () => { try { localStorage.setItem(POSTS_KEY, JSON.stringify(posts)); } catch { /* 위와 같음 */ } };
 
 function render() {
