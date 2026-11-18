@@ -65,9 +65,9 @@ function renderList() {
       });
       mine.append(button);
     } else if (application.points > 0) {
-      mine.append(el('span', 'status selected', `이수 · ${application.points}점 받음`));
+      mine.append(el('span', 'status selected', `이수 · ${application.points}점`));
     } else {
-      mine.append(el('span', `status ${application.status}`, application.status === 'applied' ? '신청 완료 · 선발 대기' : APPLY_STATUS[application.status]));
+      mine.append(el('span', `status ${application.status}`, APPLY_STATUS[application.status]));
       if (application.status === 'applied') {
         const cancel = el('button', '', '신청 취소');
         cancel.type = 'button';

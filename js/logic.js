@@ -30,7 +30,7 @@ function summarize(records, programs, term) {
 }
 
 // 신청 상태 (학생 화면과 교직원 화면이 같이 씀)
-const APPLY_STATUS = { applied: '선발 대기 중', selected: '선발됐어요', rejected: '선발되지 않았어요' };
+const APPLY_STATUS = { applied: '대기', selected: '선발완료', rejected: '미선발' };
 
 const isStudentId = (text) => /^\d{8}$/.test(text);
 
