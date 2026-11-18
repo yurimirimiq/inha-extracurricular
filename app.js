@@ -32,6 +32,14 @@ if (isStudentId(demoId)) {
 }
 const effective = () => mergeRecords(records, confirmed);
 
+// 신청 (시험 버전): { 프로그램이름: { 신청자: { status, at } } }. 교직원 화면(admin.js)이 같은 곳을 읽고 선발함.
+// shortcut: 이 브라우저에만 저장돼서 학교에 실제로 접수되지 않음. 서버 연결 + 학교 협의 전까지는 흐름 시연용.
+const APPLY_KEY = 'inha-apply-demo-v1';
+let applications = {};
+try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ }
+const saveApplications = () => { try { localStorage.setItem(APPLY_KEY, JSON.stringify(applications)); } catch { /* 위와 같음 */ } };
+const me = isStudentId(demoId) ? demoId : session || 'guest';
+
 // 팀 프로그램 카드에 글 개수를 보여주려고 읽음 (쓰기는 team.js)
 let teamPosts = {};
 try { teamPosts = JSON.parse(localStorage.getItem('inha-team-posts-v1')) || {}; } catch { /* 위와 같음 */ }
@@ -121,6 +129,29 @@ function renderList() {
     if (p.team) row('팀', p.team);
     if (p.note) row('참고', p.note);
 
+    const apply = el('div', 'mine apply');
+    const application = applications[p.name]?.[me];
+    if (!application) {
+      const button = el('button', 'primary', '신청하기');
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        (applications[p.name] ??= {})[me] = { status: 'applied', at: Date.now() };
+        saveApplications(); renderList();
+      });
+      apply.append(button);
+    } else {
+      apply.append(el('span', `status ${application.status}`, application.status === 'applied' ? '신청 완료 · 선발 대기 중' : APPLY_STATUS[application.status]));
+      if (application.status === 'applied') {
+        const cancel = el('button', '', '신청 취소');
+        cancel.type = 'button';
+        cancel.addEventListener('click', () => {
+          delete applications[p.name][me];
+          saveApplications(); renderList();
+        });
+        apply.append(cancel);
+      }
+    }
+
     const mine = el('div', 'mine');
     const check = Object.assign(document.createElement('input'), { type: 'checkbox', checked: done, disabled: locked });
     const toggle = el('label', 'toggle');
@@ -149,7 +180,7 @@ function renderList() {
       mine.append(pointsLabel);
     }
 
-    li.append(top, el('h3', '', p.name), info, mine);
+    li.append(top, el('h3', '', p.name), info, apply, mine);
     return li;
   }));
 }

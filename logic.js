@@ -29,6 +29,9 @@ function summarize(records, programs, term) {
   return { termTotal, byComp, certPoints, certCount };
 }
 
+// 신청 상태 (학생 화면과 교직원 화면이 같이 씀)
+const APPLY_STATUS = { applied: '선발 대기 중', selected: '선발됐어요', rejected: '선발되지 않았어요' };
+
 const isStudentId = (text) => /^\d{8}$/.test(text);
 
 // 게시판 글쓴이 표시: 학번 전체 대신 입학 연도만 (12221234 → "22학번"). 인하대 학번이 12 + 입학 연도 두 자리로 시작한다고 가정함.
@@ -61,5 +64,5 @@ function mergeRecords(mine, confirmed) {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { mileageTerm, termMonths, runsIn, summarize, isStudentId, authorLabel, parseStudentIds, confirmedFor, mergeRecords };
+  module.exports = { mileageTerm, termMonths, runsIn, summarize, APPLY_STATUS, isStudentId, authorLabel, parseStudentIds, confirmedFor, mergeRecords };
 }

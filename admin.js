@@ -57,6 +57,41 @@ function render() {
   $('empty').hidden = rows.length > 0;
 }
 
+// 신청자 선발: 학생 화면(app.js)이 저장한 신청을 읽어서 상태만 바꿈
+const APPLY_KEY = 'inha-apply-demo-v1';
+let applications = {};
+try { applications = JSON.parse(localStorage.getItem(APPLY_KEY)) || {}; } catch { /* 위와 같음 */ }
+const saveApplications = () => { try { localStorage.setItem(APPLY_KEY, JSON.stringify(applications)); } catch { /* 위와 같음 */ } };
+
+function renderApplications() {
+  const rows = [];
+  for (const [name, applicants] of Object.entries(applications)) {
+    for (const [id, application] of Object.entries(applicants)) {
+      const tr = document.createElement('tr');
+      const actions = el('td');
+      for (const [status, label] of [['selected', '선발'], ['rejected', '미선발'], ['applied', '대기로']]) {
+        if (status === application.status) continue;
+        const button = el('button', label);
+        button.type = 'button';
+        button.setAttribute('aria-label', `${id} ${name} ${label}`);
+        button.addEventListener('click', () => {
+          application.status = status;
+          saveApplications(); renderApplications();
+        });
+        actions.append(button);
+      }
+      const state = el('td', APPLY_STATUS[application.status]);
+      state.className = `status ${application.status}`;
+      tr.append(el('td', new Date(application.at).toLocaleDateString('ko-KR')), el('td', name), el('td', id), state, actions);
+      rows.push([application.at, tr]);
+    }
+  }
+  rows.sort((a, b) => b[0] - a[0]);
+  $('applyRows').replaceChildren(...rows.map(([, tr]) => tr));
+  $('applyCount').textContent = `${rows.length}건`;
+  $('applyEmpty').hidden = rows.length > 0;
+}
+
 function confirmStudents(term, name, ids, points) {
   const students = ((confirmations[term] ??= {})[name] ??= {});
   for (const id of ids) students[id] = points;
@@ -81,14 +116,21 @@ $('seed').addEventListener('click', () => {
   confirmStudents(term, '인하 튜터링', ['00000001', '00000002', '00000003'], 4);
   confirmStudents(term, '국제도우미 Buddy', ['00000001', '00000004'], 3);
   confirmStudents(term, '역사기행', ['00000002'], 1);
+  for (const [i, id] of ['00000001', '00000002', '00000005'].entries()) {
+    (applications['INHA Creative Changer(ICC) 프로젝트'] ??= {})[id] ??= { status: 'applied', at: Date.now() - i * 86400000 };
+  }
+  saveApplications(); renderApplications();
   save(); render();
   $('formMessage').textContent = '가짜 학번으로 예시를 채웠어요. 아래 표에서 "학생 화면 보기"를 눌러보세요.';
 });
 $('clear').addEventListener('click', () => {
-  if (!confirm('확정 내역을 모두 지울까요?')) return;
+  if (!confirm('신청과 확정 내역을 모두 지울까요?')) return;
   confirmations = {};
+  applications = {};
+  saveApplications(); renderApplications();
   save(); render();
   $('formMessage').textContent = '모두 지웠어요.';
 });
 
 render();
+renderApplications();
