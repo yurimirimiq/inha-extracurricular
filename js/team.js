@@ -10,7 +10,7 @@ if (!session) location.replace('login.html');
 const program = PROGRAMS.find((p) => p.name === new URLSearchParams(location.search).get('p') && p.team);
 if (!program) location.replace('programs.html');
 
-// { 프로그램이름: [{ id, title, body, contact, author, at }] }
+// { 프로그램이름: [{ id, title, body, contact, author, at, comments: [{ id, body, author, at }] }] }
 let posts = {};
 try { posts = JSON.parse(localStorage.getItem(POSTS_KEY)) || {}; } catch { /* 위와 같음 */ }
 const save = () => { try { localStorage.setItem(POSTS_KEY, JSON.stringify(posts)); } catch { /* 위와 같음 */ } };
@@ -39,8 +39,47 @@ function render() {
       mine.append(remove);
       li.append(mine);
     }
+    li.append(commentsOf(post));
     return li;
   }));
+}
+
+// 댓글: 글마다 목록 + 한 줄 입력. 글과 같은 곳에 저장하고, 내용은 textContent로만 넣음.
+function commentsOf(post) {
+  const comments = post.comments || [];
+  const box = el('section', 'comments');
+  box.append(el('h4', '', `댓글 ${comments.length}개`));
+  const ul = el('ul');
+  ul.append(...comments.map((c) => {
+    const item = el('li');
+    item.append(el('span', 'comment-meta', `${authorLabel(c.author)} · ${new Date(c.at).toLocaleDateString('ko-KR')}`), el('p', '', c.body));
+    if (c.author === session) {
+      const remove = el('button', '', '지우기');
+      remove.type = 'button';
+      remove.setAttribute('aria-label', '내 댓글 지우기');
+      remove.addEventListener('click', () => {
+        if (!confirm('이 댓글을 지울까요?')) return;
+        post.comments = comments.filter((x) => x.id !== c.id);
+        save(); render();
+      });
+      item.append(remove);
+    }
+    return item;
+  }));
+  const form = el('form', 'comment-form');
+  const input = Object.assign(el('input'), { maxLength: 300, required: true, placeholder: '댓글을 남겨보세요' });
+  input.setAttribute('aria-label', `"${post.title}" 글에 댓글 쓰기`);
+  const submit = el('button', '', '댓글 달기');
+  form.append(input, submit);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const body = input.value.trim();
+    if (!body) return;
+    (post.comments ??= []).push({ id: Date.now(), body, author: session, at: Date.now() });
+    save(); render();
+  });
+  box.append(ul, form);
+  return box;
 }
 
 if (program) {

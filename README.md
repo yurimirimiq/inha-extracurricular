@@ -10,13 +10,23 @@
 
 > 학교 공식 서비스가 아닌 학생 프로젝트입니다.
 
+## 미리 보기
+
+| 홈 | 프로그램 신청 |
+| --- | --- |
+| ![홈 화면: 내 마일리지 요약](assets/screenshots/home.png) | ![프로그램 신청 화면: 프로그램 목록](assets/screenshots/programs.png) |
+
+<p align="center">
+  <img src="assets/screenshots/team.png" alt="팀원 구하기 화면: 글과 댓글" width="640">
+</p>
+
 ## 화면
 
 | 화면 | 파일 | 하는 일 |
 | --- | --- | --- |
 | 홈 | `index.html` | 내 마일리지 요약, 비교과·마일리지 설명 |
 | 프로그램 신청 | `programs.html` | 프로그램 목록 보기·고르기·신청 (학생은 신청만, 점수는 교직원이 부여) |
-| 팀원 구하기 | `team.html` | 팀 프로그램별 팀원 모집 글 |
+| 팀원 구하기 | `team.html` | 팀 프로그램별 팀원 모집 글 쓰기, 글마다 댓글 |
 | 로그인 | `login.html` | 시험 버전: 이름·학과·학번을 받고 아무 값이나 통과, 비밀번호는 저장 안 함 |
 | 교직원 | `admin.html` | 신청자(학과·학번·이름) 선발과 마일리지 부여 (시연용, 가짜 데이터) |
 
@@ -37,6 +47,7 @@
 │   └── test.js        검사
 └── assets/
     ├── icons/         3D 이모지 그림
+    ├── screenshots/   README에 쓰는 화면 그림
     └── mascot/        인하대 마스코트 그림
 ```
 
