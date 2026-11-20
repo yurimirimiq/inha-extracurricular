@@ -103,12 +103,12 @@ for (const odd of ['ㄷ', '', null, 'guest']) assert.equal(authorLabel(odd), '�
   };
   const mine = browser(), other = browser();
   assert.equal(mine.remote, true);
-  await mine.addPost('12221234', '인하 튜터링', { title: '제목', body: '내용', contact: '연락' });
+  await mine.addPost('12221234', '인하 튜터링', { title: '제목', body: '내용', skills: '경험', contact: '연락' });
   const [post] = await other.list('12229999');
-  assert.deepEqual([post.title, post.program, post.author, post.mine], ['제목', '인하 튜터링', '22학번', false]); // 남에게도 보이지만 남의 글
-  await other.addComment('12221111', post.id, '댓글');
+  assert.deepEqual([post.title, post.program, post.skills, post.author, post.mine], ['제목', '인하 튜터링', '경험', '22학번', false]); // 남에게도 보이지만 남의 글
+  await other.addComment('12221111', post.id, '댓글', '지원자 경험');
   const [seen] = await mine.list('12221234');
-  assert.deepEqual([seen.mine, seen.comments.length, seen.comments[0].body, seen.comments[0].mine], [true, 1, '댓글', false]);
+  assert.deepEqual([seen.mine, seen.comments.length, seen.comments[0].body, seen.comments[0].skills, seen.comments[0].mine], [true, 1, '댓글', '지원자 경험', false]);
   assert.equal(await other.removePost(post.id), false); // 남은 못 지움
   assert.equal(await mine.removeComment(seen.comments[0].id), false);
   assert.equal(await other.removeComment(seen.comments[0].id), true);

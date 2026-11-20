@@ -188,8 +188,9 @@ summary { cursor: pointer; color: var(--sub); font-weight: 500; }
 .comments li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: .9375rem; }
 .comments li p { margin: 0; flex: 1 1 12ch; white-space: pre-wrap; overflow-wrap: anywhere; }
 .comment-meta { font-size: .8125rem; opacity: .65; }
-.comment-form { display: flex; gap: 8px; }
-.comment-form input { flex: 1; min-width: 0; border: 0; border-radius: 999px; padding: 7px 14px; font: inherit; font-size: .9375rem; background: #fff; }
+.comment-form { display: flex; flex-wrap: wrap; gap: 8px; }
+.comments li .comment-skills { flex: 1 1 100%; font-size: .875rem; opacity: .8; }
+.comment-form input { flex: 1 1 220px; min-width: 0; border: 0; border-radius: 999px; padding: 7px 14px; font: inherit; font-size: .9375rem; background: #fff; }
 .fields input:not([type=number]) { border: 0; border-radius: 12px; padding: 9px 14px; font: inherit; }
 
 /* 단추, 교직원 화면 */

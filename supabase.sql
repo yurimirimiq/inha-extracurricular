@@ -1,11 +1,16 @@
 -- 팀원 구하기 게시판. Supabase 대시보드 → SQL Editor에 붙여넣고 한 번 실행.
 -- 진짜 로그인이 없어서 누구나 읽고 쓸 수 있고, 지우기는 글 쓴 브라우저의 비밀 열쇠가 맞을 때만 됨(js/board.js 설명 참고).
+-- 예전 버전을 이미 실행했다면 두 표에 skills 열만 더함:
+--   alter table posts add column skills text not null default '' check (char_length(skills) <= 300);
+--   alter table comments add column skills text not null default '' check (char_length(skills) <= 300);
+--   grant insert (skills) on posts, comments to anon;
 
 create table posts (
   id bigint generated always as identity primary key,
   program text not null check (char_length(program) between 1 and 100),
   title text not null check (char_length(title) between 1 and 60),
   body text not null check (char_length(body) between 1 and 1000),
+  skills text not null default '' check (char_length(skills) <= 300),
   contact text not null check (char_length(contact) between 1 and 100),
   author text not null check (char_length(author) <= 10),
   owner_tag text not null check (owner_tag ~ '^[0-9a-f]{64}$'),
@@ -16,6 +21,7 @@ create table comments (
   id bigint generated always as identity primary key,
   post_id bigint not null references posts (id) on delete cascade,
   body text not null check (char_length(body) between 1 and 300),
+  skills text not null default '' check (char_length(skills) <= 300),
   author text not null check (char_length(author) <= 10),
   owner_tag text not null check (owner_tag ~ '^[0-9a-f]{64}$'),
   created_at timestamptz not null default now()
@@ -27,8 +33,8 @@ alter table posts enable row level security;
 alter table comments enable row level security;
 revoke all on posts, comments from anon;
 grant select on posts, comments to anon;
-grant insert (program, title, body, contact, author, owner_tag) on posts to anon;
-grant insert (post_id, body, author, owner_tag) on comments to anon;
+grant insert (program, title, body, skills, contact, author, owner_tag) on posts to anon;
+grant insert (post_id, body, skills, author, owner_tag) on comments to anon;
 create policy "누구나 읽기" on posts for select to anon using (true);
 create policy "누구나 쓰기" on posts for insert to anon with check (true);
 create policy "누구나 읽기" on comments for select to anon using (true);

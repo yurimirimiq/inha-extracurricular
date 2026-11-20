@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>팀원 구하기 · 인하 비교과 마일리지</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="css/style.css?v=31">
+<link rel="stylesheet" href="css/style.css?v=32">
 </head>
 <body>
 <main>
@@ -37,10 +37,12 @@
     <label class="wide">제목
       <input id="title" maxlength="60" required placeholder="예: 자료구조 같이 공부할 2명 구해요"></label>
     <label class="wide">내용
-      <textarea id="body" rows="4" maxlength="1000" required placeholder="어떤 팀을 만들고 싶은지, 언제 모일 수 있는지 적어주세요."></textarea></label>
+      <textarea id="body" rows="4" maxlength="1000" required placeholder="어떤 팀을 만들고 싶은지, 어떤 팀원을 찾는지, 언제 모일 수 있는지 적어주세요."></textarea></label>
+    <label class="wide">내 경험·역량
+      <textarea id="skills" rows="2" maxlength="300" required placeholder="예: 선형대수 A+, 튜터링 튜터 1학기, 파이썬으로 팀 프로젝트 2번"></textarea></label>
     <label class="wide">연락 방법
       <input id="contact" maxlength="100" required placeholder="예: 오픈채팅 링크, 인스타 아이디"></label>
-    <p class="hint wide">전화번호나 학번 같은 개인정보는 적지 않는 게 좋아요. 글쓴이는 "22학번"처럼 입학 연도만 보여요.</p>
+    <p class="hint wide">전화번호나 학번 같은 개인정보는 적지 않는 게 좋아요. 글쓴이는 "22학번"처럼 입학 연도만 보여서, 경험·역량을 적어야 서로 어떤 사람인지 알 수 있어요.</p>
     <div class="actions wide"><button type="submit" class="primary">글 올리기</button></div>
   </form>
 
@@ -48,12 +50,12 @@
   <ul id="posts" class="posts" aria-labelledby="posts-title"></ul>
   <p id="empty" class="empty">아직 글이 없어요. 첫 글을 써보세요.</p>
 </main>
-<script src="js/data.js?v=31"></script>
-<script src="js/logic.js?v=31"></script>
-<script src="js/demo.js?v=31"></script>
-<script src="js/config.js?v=31"></script>
-<script src="js/board.js?v=31"></script>
-<script src="js/common.js?v=31"></script>
-<script src="js/team.js?v=31"></script>
+<script src="js/data.js?v=32"></script>
+<script src="js/logic.js?v=32"></script>
+<script src="js/demo.js?v=32"></script>
+<script src="js/config.js?v=32"></script>
+<script src="js/board.js?v=32"></script>
+<script src="js/common.js?v=32"></script>
+<script src="js/team.js?v=32"></script>
 </body>
 </html>

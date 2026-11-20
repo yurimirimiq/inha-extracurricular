@@ -32,6 +32,7 @@ function render() {
     const meta = el('div', 'card-top');
     meta.append(el('span', '', post.author), el('span', '', new Date(post.at).toLocaleDateString('ko-KR')));
     const info = el('dl', 'info');
+    if (post.skills) info.append(el('dt', '', '경험'), el('dd', '', post.skills)); // 예전 글에는 없음
     info.append(el('dt', '', '연락'), el('dd', '', post.contact));
     li.append(meta, el('h3', '', post.title), el('p', 'post-body', post.body), info);
     if (post.mine) {
@@ -44,7 +45,7 @@ function render() {
   }));
 }
 
-// 댓글: 글마다 목록 + 한 줄 입력. 내용은 textContent로만 넣음.
+// 댓글·지원: 글마다 목록 + 입력. 내용은 textContent로만 넣음.
 function commentsOf(post) {
   const box = el('section', 'comments');
   box.append(el('h4', '', `댓글 ${post.comments.length}개`));
@@ -52,6 +53,7 @@ function commentsOf(post) {
   ul.append(...post.comments.map((c) => {
     const item = el('li');
     item.append(el('span', 'comment-meta', `${c.author} · ${new Date(c.at).toLocaleDateString('ko-KR')}`), el('p', '', c.body));
+    if (c.skills) item.append(el('p', 'comment-skills', `경험·역량: ${c.skills}`));
     if (c.mine) {
       const erase = button('지우기', () => remove('이 댓글을 지울까요?', () => board.removeComment(c.id)));
       erase.setAttribute('aria-label', '내 댓글 지우기');
@@ -62,12 +64,15 @@ function commentsOf(post) {
   const form = el('form', 'comment-form');
   const input = Object.assign(el('input'), { maxLength: 300, required: true, placeholder: '댓글을 남겨보세요' });
   input.setAttribute('aria-label', `"${post.title}" 글에 댓글 쓰기`);
-  form.append(input, el('button', '', '댓글 달기'));
+  // 지원하는 사람도 자기 경험을 보여줄 수 있게 (선택)
+  const skills = Object.assign(el('input'), { maxLength: 300, placeholder: '지원한다면 내 경험·역량도 적어주세요 (선택)' });
+  skills.setAttribute('aria-label', `"${post.title}" 글에 지원할 때 내 경험·역량`);
+  form.append(input, skills, el('button', '', '댓글 달기'));
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const body = input.value.trim();
     if (!body) return;
-    board.addComment(me, post.id, body).then(reload).catch(fail);
+    board.addComment(me, post.id, body, skills.value.trim()).then(reload).catch(fail);
   });
   box.append(ul, form);
   return box;
@@ -81,8 +86,8 @@ if (program) {
   $('localNotice').hidden = board.remote;
   $('postForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const fields = { title: $('title').value.trim(), body: $('body').value.trim(), contact: $('contact').value.trim() };
-    if (!fields.title || !fields.body || !fields.contact) return;
+    const fields = { title: $('title').value.trim(), body: $('body').value.trim(), skills: $('skills').value.trim(), contact: $('contact').value.trim() };
+    if (!fields.title || !fields.body || !fields.skills || !fields.contact) return;
     board.addPost(me, program.name, fields).then(() => { e.target.reset(); return reload(); }).catch(fail);
   });
 }
